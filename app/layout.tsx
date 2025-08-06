@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { ModalProvider } from '@/contexts/ModalContext'
+import SWRProvider from './_components/SWRProvider'
+import Modal from '@/components/common/Modal'
 
 export const metadata: Metadata = {
   title: '축슐랭',
@@ -21,7 +24,12 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
       </head>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ModalProvider>
+          <SWRProvider>{children}</SWRProvider>
+          <Modal />
+        </ModalProvider>
+      </body>
     </html>
   )
 }
