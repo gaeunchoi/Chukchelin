@@ -99,10 +99,20 @@ function StadiumSelector({
     >
       <DrawerTrigger>{triggerContent}</DrawerTrigger>
 
-      <DrawerContent className="flex flex-col h-[75%] z-1000">
-        <DrawerHeader className="flex flex-col gap-8 flex-shrink-0">
+      <DrawerContent
+        className={flexCol('h-[70%]', 'z-1000', 'gap-3')}
+      >
+        <DrawerHeader className={flexCol('gap-8', 'flex-shrink-0')}>
           <DrawerTitle>
-            <div className="flex items-start text-[20px] font-bold text-black">
+            <div
+              className={flexCol(
+                'items-start',
+                'text-[20px]',
+                'font-bold',
+                'text-black',
+                'mb-4',
+              )}
+            >
               구장을 선택해주세요
             </div>
           </DrawerTitle>
