@@ -1,20 +1,42 @@
 import StadiumMapSkeleton from '@/components/skeleton/StadiumMapSkeleton'
-import { SavedRestaurant } from '@/types/restaurant'
+import { SavedRestaurant, Restaurant } from '@/types/restaurant'
 import { Stadium } from '@/types/stadium'
 import { useEffect, useRef } from 'react'
 
 type StadiumMapProps = {
   stadium: Stadium | null
-  restuarants?: SavedRestaurant[]
+  restaurants?: SavedRestaurant[] | Restaurant[]
 }
 
-function StadiumMap({ stadium, restuarants }: StadiumMapProps) {
+const restaurantMarkerIcon = (restaurant: Restaurant) => {
+  return `<div class="w-7 h-7 rounded-full overflow-hidden bg-cover bg-center border-2 border-white shadow-md" style="background-image: url('${restaurant.restaurant_category.image_url}')"></div>`
+}
+
+const markerInfomation = (restaurant: Restaurant) => {
+  return `<div class="p-3 max-w-[200px] bg-white border border-gray-100">
+      <div class="font-bold text-sm mb-1">${restaurant.name}</div>
+      <div class="text-xs text-gray-600 mb-1">
+        ${restaurant.address}
+      </div>
+      <div class="text-xs text-gray-600">
+        ${restaurant.contact || '연락처 없음'}
+      </div>
+    </div>`
+}
+
+function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!stadium || !mapRef.current) return
+    if (
+      !stadium ||
+      !mapRef.current ||
+      typeof window === 'undefined' ||
+      !window.naver
+    )
+      return
 
-    const stadiumPosition = new naver.maps.LatLng(
+    const stadiumPosition = new window.naver.maps.LatLng(
       stadium.latitude,
       stadium.longitude,
     )
@@ -24,6 +46,7 @@ function StadiumMap({ stadium, restuarants }: StadiumMapProps) {
     }
 
     const map = new window.naver.maps.Map(mapRef.current, mapOptions)
+    const infoWindows: any[] = []
 
     new window.naver.maps.Marker({
       position: stadiumPosition,
@@ -31,17 +54,17 @@ function StadiumMap({ stadium, restuarants }: StadiumMapProps) {
       title: stadium.name,
       icon: {
         url: stadium.team[0].logo_image_url,
-        size: new naver.maps.Size(50, 52),
-        scaledSize: new naver.maps.Size(50, 52),
-        origin: new naver.maps.Point(0, 0),
-        anchor: new naver.maps.Point(25, 26),
+        size: new window.naver.maps.Size(60, 60),
+        scaledSize: new window.naver.maps.Size(60, 60),
+        origin: new window.naver.maps.Point(0, 0),
+        anchor: new window.naver.maps.Point(30, 30),
       },
-    })
+    }).setZIndex(10)
 
-    restuarants?.forEach((savedRestaurant) => {
-      const restaurant = savedRestaurant.restaurant
+    restaurants?.forEach((item: SavedRestaurant | Restaurant) => {
+      const restaurant = 'restaurant' in item ? item.restaurant : item
 
-      new window.naver.maps.Marker({
+      const marker = new window.naver.maps.Marker({
         position: new window.naver.maps.LatLng(
           restaurant.latitude,
           restaurant.longitude,
@@ -49,12 +72,32 @@ function StadiumMap({ stadium, restuarants }: StadiumMapProps) {
         map,
         title: restaurant.name,
         icon: {
-          content: `<div class="w-7 h-7 rounded-full overflow-hidden bg-cover bg-center border-2 border-white shadow-md" style="background-image: url('${restaurant.restaurant_category.image_url}')"></div>`,
-          anchor: new naver.maps.Point(15, 15),
+          content: restaurantMarkerIcon(restaurant),
+          anchor: new window.naver.maps.Point(15, 15),
         },
       })
+
+      const infoWindow = new window.naver.maps.InfoWindow({
+        content: markerInfomation(restaurant),
+        anchorSize: new window.naver.maps.Size(10, 10),
+        pixelOffset: new window.naver.maps.Point(0, -10),
+      })
+
+      infoWindows.push(infoWindow)
+
+      window.naver.maps.Event.addListener(marker, 'click', () => {
+        infoWindows.forEach((info) => {
+          info.close()
+        })
+
+        infoWindow.open(map, marker)
+      })
+
+      window.naver.maps.Event.addListener(map, 'click', () => {
+        infoWindow.close()
+      })
     })
-  }, [stadium, restuarants])
+  }, [stadium, restaurants])
 
   if (!stadium) {
     return <StadiumMapSkeleton />
@@ -62,7 +105,7 @@ function StadiumMap({ stadium, restuarants }: StadiumMapProps) {
 
   return (
     <div
-      className="w-full h-[170px]"
+      className="w-full h-[200px]"
       ref={mapRef}
     />
   )

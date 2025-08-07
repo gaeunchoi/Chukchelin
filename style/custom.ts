@@ -62,3 +62,14 @@ export const badge = (...args: ClassValue[]) =>
     'border',
     ...args,
   )
+
+export const header = (...args: ClassValue[]) =>
+  cn(
+    'w-full',
+    'min-h-[50px]',
+    'flex',
+    'flex-row',
+    'items-center',
+    'gap-2',
+    ...args,
+  )

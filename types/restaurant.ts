@@ -20,6 +20,7 @@ export type Restaurant = {
   review_average_score: number | null
   user_favorite_count: number
   category_id: number
+  distance: number
   restaurant_category: RestaurantCategory
   stadium?: Stadium
 }

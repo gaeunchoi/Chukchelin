@@ -1,13 +1,13 @@
 'use client'
 import { flexCol, flexRowICenter } from '@/style/custom'
 import { Stadium } from '@/types/stadium'
-import { Check } from 'lucide-react'
 import LogoImage from '@/components/image/LogoImage'
+import CheckSelected from '../common/CheckSelected'
 
 type StadiumItemProps = {
   stadium: Stadium
   isSelected?: boolean
-  onSelect: (stadium: Stadium) => void
+  onSelect?: (stadium: Stadium) => void
 }
 
 function StadiumItem({
@@ -16,15 +16,7 @@ function StadiumItem({
   onSelect,
 }: StadiumItemProps) {
   const stadiumItemRightContents = isSelected ? (
-    <div className={flexRowICenter()}>
-      <span className="text-[14px] font-semibold text-black">
-        선택됨
-      </span>
-      <Check
-        color="black"
-        size={16}
-      />
-    </div>
+    <CheckSelected />
   ) : (
     <div className="text-[14px] font-semibold text-[#838383]">
       주변 맛집 {stadium.restaurant_count}개
@@ -41,7 +33,7 @@ function StadiumItem({
         'rounded-lg',
         'transition-colors',
       )}
-      onClick={() => onSelect(stadium)}
+      onClick={() => onSelect?.(stadium)}
     >
       <div className={flexRowICenter()}>
         <LogoImage
@@ -59,7 +51,7 @@ function StadiumItem({
           </div>
         </div>
       </div>
-      {isSelected && stadiumItemRightContents}
+      {isSelected !== undefined && stadiumItemRightContents}
     </div>
   )
 }

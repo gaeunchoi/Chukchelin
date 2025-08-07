@@ -1,4 +1,4 @@
-import RestaurantItem from '@/components/RestaurantItem'
+import RestaurantItem from '@/components/restaurant/RestaurantItem'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 import StadiumMap from '@/components/stadium/StadiumMap'
 import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
@@ -61,6 +61,7 @@ function TabForRestaurant() {
     </div>
   )
 
+  console.log(savedRestaurants)
   return (
     <div className="w-full flex flex-col items-start gap-4">
       <StadiumSelector
@@ -69,7 +70,7 @@ function TabForRestaurant() {
       />
       <StadiumMap
         stadium={selectedStadium}
-        restuarants={savedRestaurants}
+        restaurants={savedRestaurants}
       />
       {savedRestaurants && savedRestaurants.length > 0 ? (
         savedRestaurants.map((data: SavedRestaurant) => (

@@ -1,4 +1,4 @@
-import { flexCol } from '@/style/custom'
+import { flexCol, flexRowICenter } from '@/style/custom'
 import StadiumItem from './StadiumItem'
 import { Button } from '@/components/ui/button'
 import {
@@ -14,7 +14,7 @@ import { ChevronDown } from 'lucide-react'
 import { Stadium } from '@/types/stadium'
 import { useStadiums } from '@/hooks/useStadiums'
 import { useState, useEffect, useMemo } from 'react'
-import StadiumSelectorSkeleton from '@/components/skeleton/StadiumSelectorSkeleton'
+import LogoImage from '../image/LogoImage'
 
 type StadiumSelectorProps = {
   onSelect: (stadium: Stadium) => void
@@ -39,7 +39,7 @@ function StadiumSelector({
       logoUrl:
         selectedStadium?.team[0].logo_image_url ||
         '/logo/kleague.png',
-      name: selectedStadium?.name || '전체 구장',
+      name: selectedStadium?.name || '구장 선택',
     }),
     [selectedStadium],
   )
@@ -61,14 +61,25 @@ function StadiumSelector({
   }
 
   const triggerContent = !selectedStadium ? (
-    <StadiumSelectorSkeleton />
+    <div className={flexRowICenter('gap-1')}>
+      <LogoImage
+        url="/logo/kleague.png"
+        size={20}
+      />
+      <div className="text-[16px] font-bold text-black">
+        구장 선택
+      </div>
+      <ChevronDown
+        size={16}
+        color="black"
+        className="ml-0.5"
+      />
+    </div>
   ) : (
-    <div className="flex flex-row items-center gap-1">
-      <img
-        src={selectedStadiumInfo.logoUrl}
-        alt="selected stadium logo"
-        width={20}
-        height={20}
+    <div className={flexRowICenter('gap-1')}>
+      <LogoImage
+        url={selectedStadiumInfo.logoUrl}
+        size={20}
       />
       <div className="text-[16px] font-bold text-black">
         {selectedStadiumInfo.name}
