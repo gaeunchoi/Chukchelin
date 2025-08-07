@@ -46,6 +46,7 @@ function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
     }
 
     const map = new window.naver.maps.Map(mapRef.current, mapOptions)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const infoWindows: any[] = []
 
     new window.naver.maps.Marker({
