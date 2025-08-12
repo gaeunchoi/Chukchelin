@@ -1,13 +1,14 @@
+import { useRouter } from 'next/navigation'
 import { flexCol, flexRowICenter } from '@/style/custom'
 import { Review, ReviewImageType } from '@/types/review'
-import CategoryImage from '../image/CategoryImage'
-import ScoreRating from '../common/ScoreRating'
 import { Restaurant } from '@/types/restaurant'
 import { User } from '@/types/user'
-import ProfileImage from '../image/ProfileImage'
-import ReviewImage from '../image/ReviewImage'
 import { Button } from '../ui/button'
-import { useRouter } from 'next/navigation'
+import CategoryImage from '../image/CategoryImage'
+import ScoreRating from '../common/ScoreRating'
+import ProfileImage from '../image/ProfileImage'
+import LogoImage from '../image/LogoImage'
+import ReviewImage from '../image/ReviewImage'
 
 type ReviewItemProps = {
   isDetailPage?: boolean
@@ -23,9 +24,16 @@ const UserContent = ({ user }: { user: User }) => (
       size={48}
     />
     <div className={flexCol('gap-0.5')}>
-      <div className="text-[14px] text-black font-bold">
-        {user.nickname}
+      <div className={flexRowICenter('gap-1')}>
+        <div className="text-[14px] text-black font-bold">
+          {user.nickname}
+        </div>
+        <LogoImage
+          url={user.favorite_team?.logo_image_url || ''}
+          size={18}
+        />
       </div>
+
       <div
         className={flexRowICenter(
           'gap-1',
