@@ -69,17 +69,13 @@ function ProviderPage() {
     } catch (error) {
       showErrorModal(error)
     }
-  }, [
-    code,
-    setAccessToken,
-    mutateUser,
-    showSuccessModal,
-    showErrorModal,
-  ])
+  }, [code, setAccessToken, mutateUser])
 
   useEffect(() => {
-    handleLogin()
-  }, [handleLogin])
+    if (code) {
+      handleLogin()
+    }
+  }, [code])
 
   return (
     <div className={flexColIJCenter('min-h-screen', 'bg-slate-100')}>
