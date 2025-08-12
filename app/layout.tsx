@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ModalProvider } from '@/contexts/ModalContext'
 import SWRProvider from './_components/SWRProvider'
@@ -11,6 +11,13 @@ import 'react-loading-skeleton/dist/skeleton.css'
 export const metadata: Metadata = {
   title: '축슐랭',
   description: 'K리그 구장 인근 맛집을 확인해보세요',
+}
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 
 declare global {
@@ -33,10 +40,6 @@ export default function RootLayout({
           as="style"
           crossOrigin=""
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"
         />
       </head>
       <Script
