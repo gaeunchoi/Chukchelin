@@ -7,26 +7,6 @@ type ModalContextType = {
   contents: ModalContents
   openModal: (contents: ModalContents) => void
   closeModal: () => void
-  showSuccessModal: (
-    title: string,
-    description: string,
-    actionBtnText?: string,
-    onAction?: () => void,
-  ) => void
-  showErrorModal: (
-    title: string,
-    description: string,
-    actionBtnText?: string,
-    onAction?: () => void,
-  ) => void
-  showConfirmModal: (
-    title: string,
-    description: string,
-    onConfirm: () => void,
-    confirmText?: string,
-    cancelText?: string,
-  ) => void
-  showCustomModal: (contents: ModalContents) => void
 }
 
 const ModalContext = createContext<ModalContextType | null>(null)
@@ -51,57 +31,6 @@ export const ModalProvider = ({
     setIsOpen(false)
   }
 
-  const showSuccessModal = (
-    title: string,
-    description: string,
-    actionBtnText: string = '확인',
-    onAction?: () => void,
-  ) => {
-    openModal({
-      title,
-      description,
-      actionBtnText,
-      onAction: onAction || closeModal,
-    })
-  }
-
-  const showErrorModal = (
-    title: string,
-    description: string,
-    actionBtnText: string = '확인',
-    onAction?: () => void,
-  ) => {
-    openModal({
-      title,
-      description,
-      actionBtnText,
-      onAction: onAction || closeModal,
-    })
-  }
-
-  const showConfirmModal = (
-    title: string,
-    description: string,
-    onConfirm: () => void,
-    confirmText: string = '다시 시도',
-    cancelText: string = '취소',
-  ) => {
-    openModal({
-      title,
-      description,
-      actionBtnText: confirmText,
-      onAction: () => {
-        onConfirm()
-        closeModal()
-      },
-    })
-  }
-
-  // 커스텀 모달 (완전히 커스터마이징)
-  const showCustomModal = (contents: ModalContents) => {
-    openModal(contents)
-  }
-
   return (
     <ModalContext.Provider
       value={{
@@ -109,10 +38,6 @@ export const ModalProvider = ({
         contents,
         openModal,
         closeModal,
-        showSuccessModal,
-        showErrorModal,
-        showConfirmModal,
-        showCustomModal,
       }}
     >
       {children}
