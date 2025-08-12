@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { ModalProvider } from '@/contexts/ModalContext'
-import { MainStadiumProvider } from '@/contexts/MainStadiumIdContext'
 import SWRProvider from './_components/SWRProvider'
 import Modal from '@/components/common/Modal'
 import Script from 'next/script'
@@ -42,9 +41,7 @@ export default function RootLayout({
       />
       <body className="antialiased">
         <ModalProvider>
-          <MainStadiumProvider>
-            <SWRProvider>{children}</SWRProvider>
-          </MainStadiumProvider>
+          <SWRProvider>{children}</SWRProvider>
           <Modal />
         </ModalProvider>
         <Toaster />

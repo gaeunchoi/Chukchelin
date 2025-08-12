@@ -7,7 +7,7 @@ import CheckSelected from '../common/CheckSelected'
 type StadiumItemProps = {
   stadium: Stadium
   isSelected?: boolean
-  onSelect?: (stadium: Stadium) => void
+  onSelect?: (stadiumId: number) => void
   onClick?: (stadiumId: number) => void
 }
 
@@ -36,7 +36,7 @@ function StadiumItem({
         'transition-colors',
       )}
       onClick={() => {
-        onSelect?.(stadium)
+        onSelect?.(stadium.id)
         onClick?.(stadium.id)
       }}
     >

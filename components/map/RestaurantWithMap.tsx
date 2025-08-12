@@ -1,4 +1,3 @@
-import { useSelectScheduleContext } from '@/contexts/SelectScheduleContext'
 import { useStadium } from '@/hooks/useStadium'
 import { useRestaurants } from '@/hooks/useRestaurants'
 import { flexColIJCenter } from '@/style/custom'
@@ -21,15 +20,13 @@ function RestaurantWithMap({
   stadiumId,
 }: RestaurantWithMapProps) {
   const { data: stadium } = useStadium(stadiumId)
-
   const { data: sortedRestaurants, mutate: mutateRestaurants } =
     useRestaurants(
       stadiumId,
       sortConfig[sortOption || SortOption.RATING_HIGH].sortBy,
       sortConfig[sortOption || SortOption.RATING_HIGH].sortOrder,
     )
-
-  const displayRestaurants = restaurants || sortedRestaurants
+  const displayRestaurants = sortedRestaurants || restaurants
 
   useEffect(() => {
     if (!restaurants) {
@@ -37,8 +34,7 @@ function RestaurantWithMap({
     }
   }, [sortOption, mutateRestaurants, restaurants])
 
-  if (!stadium || !displayRestaurants)
-    return <RestaurantListSkeleton />
+  if (!displayRestaurants) return <RestaurantListSkeleton />
 
   return (
     <div className={flexColIJCenter('w-full', 'gap-9')}>

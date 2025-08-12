@@ -1,13 +1,12 @@
-'use client'
 import { createContext, useState, useContext, ReactNode } from 'react'
 
-type MainStadiumIdContextType = {
+type MainStadiumContextType = {
   mainStadiumId: number | null
   setMainStadiumId: (stadiumId: number) => void
 }
 
-const MainStadiumIdContext =
-  createContext<MainStadiumIdContextType | null>(null)
+const MainStadiumContext =
+  createContext<MainStadiumContextType | null>(null)
 
 export const MainStadiumProvider = ({
   children,
@@ -19,19 +18,19 @@ export const MainStadiumProvider = ({
   )
 
   return (
-    <MainStadiumIdContext.Provider
+    <MainStadiumContext.Provider
       value={{ mainStadiumId, setMainStadiumId }}
     >
       {children}
-    </MainStadiumIdContext.Provider>
+    </MainStadiumContext.Provider>
   )
 }
 
-export const useMainStadiumIdContext = () => {
-  const context = useContext(MainStadiumIdContext)
+export const useMainStadiumContext = () => {
+  const context = useContext(MainStadiumContext)
   if (!context) {
     throw new Error(
-      'useMainStadiumIdContext must be used within a MainStadiumProvider',
+      'useMainStadiumContext must be used within a MainStadiumProvider',
     )
   }
   return context

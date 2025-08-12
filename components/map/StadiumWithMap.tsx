@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 import { Stadium } from '@/types/stadium'
 import { flexColIJCenter } from '@/style/custom'
 import StadiumItem from '../stadium/StadiumItem'
@@ -9,21 +8,12 @@ type StadiumWithMapProps = {
 }
 
 function StadiumWithMap({ stadium }: StadiumWithMapProps) {
-  const router = useRouter()
-
-  const handleStadiumClick = (stadiumId: number) => {
-    router.push(`/?stadiumId=${stadiumId}`)
-  }
-
   return (
     <div
       className={flexColIJCenter('gap-3')}
       key={stadium.id}
     >
-      <StadiumItem
-        stadium={stadium}
-        onClick={handleStadiumClick}
-      />
+      <StadiumItem stadium={stadium} />
       <MapContainer stadium={stadium} />
     </div>
   )

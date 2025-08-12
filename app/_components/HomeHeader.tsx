@@ -1,36 +1,36 @@
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
 import { useUser } from '@/hooks/useUser'
-import { useSearchParams } from 'next/navigation'
-import { useMainStadiumIdContext } from '@/contexts/MainStadiumIdContext'
+import { useEffect } from 'react'
 import { Search, Bookmark, UserCog } from 'lucide-react'
 import { header, flexRowICenter } from '@/style/custom'
-import { useEffect } from 'react'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 
 function HomeHeader() {
   const router = useRouter()
-  const params = useSearchParams().get('stadiumId')
+  const searchParams = useSearchParams()
+  const mainStadiumId = searchParams.get('mainStadiumId')
   const { data: loggedInUser } = useUser()
-  const { mainStadiumId, setMainStadiumId } =
-    useMainStadiumIdContext()
+  const { setSelectedSchedule } = useSelectedScheduleContext()
 
   const handleStadiumSelect = (stadiumId: number) => {
-    setMainStadiumId(stadiumId)
+    setSelectedSchedule(null)
+
+    const newUrl = `/?mainStadiumId=${stadiumId}`
+    window.history.pushState(null, '', newUrl)
   }
 
   useEffect(() => {
-    if (params) {
-      setMainStadiumId(Number(params))
-    } else if (loggedInUser) {
-      setMainStadiumId(loggedInUser.favorite_team.id)
+    if (loggedInUser && !mainStadiumId) {
+      handleStadiumSelect(loggedInUser.favorite_team.id)
     }
-  }, [loggedInUser, params, setMainStadiumId])
+  }, [loggedInUser, mainStadiumId])
 
   return (
     <div className={header('justify-between')}>
       <StadiumSelector
         onSelect={handleStadiumSelect}
-        selectedStadiumId={mainStadiumId}
+        selectedStadiumId={Number(mainStadiumId)}
       />
       <div className={flexRowICenter('gap-6')}>
         <Search

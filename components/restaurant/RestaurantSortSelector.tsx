@@ -76,7 +76,9 @@ function RestaurantSortSelector({
                   'text-[16px]',
                   'font-bold',
                 )}
-                onClick={() => handleSortOptionSelect(option)}
+                onClick={() => {
+                  handleSortOptionSelect(option)
+                }}
               >
                 {option}
                 {selectedOption === option && <CheckSelected />}

@@ -1,3 +1,6 @@
+import { usePathname } from 'next/navigation'
+import { useStadiums } from '@/hooks/useStadiums'
+import { useStadium } from '@/hooks/useStadium'
 import { flexCol, flexRowICenter } from '@/style/custom'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,8 +13,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer'
 import { ChevronDown } from 'lucide-react'
-import { useStadiums } from '@/hooks/useStadiums'
-import { useStadium } from '@/hooks/useStadium'
+
 import { Stadium } from '@/types/stadium'
 import { useEffect, useState } from 'react'
 import StadiumItem from './StadiumItem'
@@ -52,6 +54,7 @@ function StadiumSelector({
   onSelect,
   selectedStadiumId: propSelectedStadiumId,
 }: StadiumSelectorProps) {
+  const pathname = usePathname()
   const { data: stadiums } = useStadiums()
   const [selectedStadiumId, setSelectedStadiumId] = useState<
     number | null
@@ -65,8 +68,8 @@ function StadiumSelector({
     }
   }, [propSelectedStadiumId])
 
-  const handleStadiumSelect = (stadium: Stadium) => {
-    setSelectedStadiumId(stadium.id)
+  const handleStadiumSelect = (stadiumId: number) => {
+    setSelectedStadiumId(stadiumId)
   }
 
   const handleCancel = () => {
@@ -77,6 +80,9 @@ function StadiumSelector({
     if (selectedStadiumId) {
       onSelect(selectedStadiumId)
       setIsOpen(false)
+
+      const newUrl = `${pathname}?mainStadiumId=${selectedStadiumId}`
+      window.history.pushState(null, '', newUrl)
     }
   }
 

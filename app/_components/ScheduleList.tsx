@@ -1,28 +1,38 @@
 'use client'
-import { flexCol, flexRowICenter } from '@/style/custom'
-import { useMainStadiumIdContext } from '@/contexts/MainStadiumIdContext'
-import { useSelectScheduleContext } from '@/contexts/SelectScheduleContext'
+import { usePathname, useSearchParams } from 'next/navigation'
+import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
 import { useTeamSchedules } from '@/hooks/useTeamSchedules'
-import { useEffect } from 'react'
-import { Team } from '@/types/stadium'
+import { useEffect, useRef } from 'react'
+import { flexCol, flexRowICenter } from '@/style/custom'
 import { Schedule } from '@/types/schedule'
 import ScheduleCard from './ScheduleCard'
 import ScheduleListSkeleton from './skeleton/ScheduleListSkeleton'
 import dayjs from 'dayjs'
 
 function ScheduleList() {
-  const { mainStadiumId } = useMainStadiumIdContext()
-  const { selectedSchedule, setSelectedSchedule, setOpposingTeam } =
-    useSelectScheduleContext()
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const refs = useRef<HTMLDivElement[]>([])
+
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const mainStadiumId = parseInt(
+    searchParams.get('mainStadiumId') as string,
+  )
+  const scheduleId = searchParams.get('scheduleId')
+  const { selectedSchedule, setSelectedSchedule } =
+    useSelectedScheduleContext()
+
   const { data: schedules } = useTeamSchedules(
-    mainStadiumId,
+    Number(mainStadiumId),
     dayjs().startOf('day').toISOString(),
   )
 
   const renderScheduleContent = () => {
     if (!schedules) return <ScheduleListSkeleton />
+
     return (
       <div
+        ref={wrapperRef}
         className={flexRowICenter(
           'w-full',
           'gap-3',
@@ -30,8 +40,13 @@ function ScheduleList() {
           'scrollbar-hide',
         )}
       >
-        {schedules.map((schedule: Schedule) => (
+        {schedules.map((schedule: Schedule, index: number) => (
           <ScheduleCard
+            ref={(el) => {
+              if (el) {
+                refs.current[index] = el
+              }
+            }}
             key={schedule.id}
             isCurrent={schedule.id === selectedSchedule?.id}
             schedule={schedule}
@@ -42,24 +57,41 @@ function ScheduleList() {
     )
   }
 
-  const handleScheduleClick = (
-    schedule: Schedule,
-    opposingTeam: Team,
-  ) => {
+  const handleScheduleClick = (schedule: Schedule) => {
     setSelectedSchedule(schedule)
-    setOpposingTeam(opposingTeam)
+
+    const currentParams = new URLSearchParams(searchParams.toString())
+    currentParams.set('scheduleId', schedule.id.toString())
+
+    const newUrl = `${pathname}?${currentParams.toString()}`
+    window.history.pushState(null, '', newUrl)
   }
 
   useEffect(() => {
-    if (schedules && schedules.length > 0) {
-      setSelectedSchedule(schedules[0])
-      setOpposingTeam(
-        schedules[0].home_team_id !== mainStadiumId
-          ? schedules[0].home_team
-          : schedules[0].away_team,
+    if (scheduleId) {
+      return setSelectedSchedule(
+        schedules?.find(
+          (schedule: Schedule) => schedule.id === Number(scheduleId),
+        ) || null,
       )
     }
-  }, [mainStadiumId, schedules, setSelectedSchedule, setOpposingTeam])
+  }, [mainStadiumId, scheduleId, schedules, pathname])
+
+  useEffect(() => {
+    if (selectedSchedule) {
+      const index = schedules?.findIndex(
+        (schedule: Schedule) => schedule.id === selectedSchedule.id,
+      )
+
+      if (index !== undefined) {
+        wrapperRef.current?.scrollTo({
+          top: 0,
+          left: refs.current[index].offsetLeft - 24,
+          behavior: 'smooth',
+        })
+      }
+    }
+  }, [selectedSchedule])
 
   if (!mainStadiumId) return null
 
