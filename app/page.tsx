@@ -19,21 +19,10 @@ export default function Home() {
       )
       currentParams.set('mainStadiumId', mainStadiumId.toString())
 
-      const newUrl = `/?${currentParams.toString()}`
+      const newUrl = `?${currentParams.toString()}`
       window.history.pushState(null, '', newUrl)
     }
   }, [mainStadiumId])
-
-  if (!mainStadiumId) {
-    return (
-      <div className={page()}>
-        <Suspense fallback={<div className={header()} />}>
-          <HomeHeader />
-        </Suspense>
-        <EmptyMainStadium />
-      </div>
-    )
-  }
 
   return (
     <SelectedScheduleProvider>
@@ -42,8 +31,14 @@ export default function Home() {
           <HomeHeader />
         </Suspense>
 
-        <ScheduleList />
-        <RestaurantList />
+        {!mainStadiumId ? (
+          <EmptyMainStadium />
+        ) : (
+          <>
+            <ScheduleList />
+            <RestaurantList />
+          </>
+        )}
       </div>
     </SelectedScheduleProvider>
   )

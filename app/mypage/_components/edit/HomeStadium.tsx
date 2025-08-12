@@ -16,9 +16,17 @@ function HomeStadium({
 }: HomeStadiumProps) {
   const { data: stadiums } = useStadiums()
 
-  const handleStadiumSelect = useCallback((stadium: Stadium) => {
-    onChange(stadium)
-  }, [])
+  const handleStadiumSelect = useCallback(
+    (stadiumId: number) => {
+      const stadium = stadiums?.find(
+        (stadium: Stadium) => stadium.id === stadiumId,
+      )
+      if (stadium) {
+        onChange(stadium)
+      }
+    },
+    [stadiums, onChange],
+  )
 
   if (!stadiums) return <HomeStadiumSkeleton />
 

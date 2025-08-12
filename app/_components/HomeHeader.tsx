@@ -1,10 +1,10 @@
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
 import { useUser } from '@/hooks/useUser'
 import { useEffect } from 'react'
 import { Search, Bookmark, UserCog } from 'lucide-react'
 import { header, flexRowICenter } from '@/style/custom'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
+import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
 
 function HomeHeader() {
   const router = useRouter()
@@ -16,7 +16,7 @@ function HomeHeader() {
   const handleStadiumSelect = (stadiumId: number) => {
     setSelectedSchedule(null)
 
-    const newUrl = `/?mainStadiumId=${stadiumId}`
+    const newUrl = `?mainStadiumId=${stadiumId}`
     window.history.pushState(null, '', newUrl)
   }
 
