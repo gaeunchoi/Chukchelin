@@ -69,7 +69,7 @@ export const badge = (...args: ClassValue[]) =>
 export const header = (...args: ClassValue[]) =>
   cn(
     'w-full',
-    'min-h-[50px]',
+    'min-h-[62px]',
     'flex',
     'flex-row',
     'items-center',
