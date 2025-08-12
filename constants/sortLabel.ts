@@ -42,3 +42,30 @@ export const sortLabelMap = {
   [SortOption.HOME_FAN_RECOMMEND_HIGH]: '홈 팬 추천 많은 순',
   [SortOption.HOME_FAN_RECOMMEND_LOW]: '홈 팬 추천 적은 순',
 }
+
+export enum ReviewSortOption {
+  REVIEW_DATE_NEW = 'REVIEW_DATE_NEW',
+  RATING_HIGH = 'RATING_HIGH',
+  RATING_LOW = 'RATING_LOW',
+}
+
+export const reviewSortConfig = {
+  [ReviewSortOption.REVIEW_DATE_NEW]: {
+    sortBy: 'id',
+    sortOrder: 'desc',
+  },
+  [ReviewSortOption.RATING_HIGH]: {
+    sortBy: 'score',
+    sortOrder: 'desc',
+  },
+  [ReviewSortOption.RATING_LOW]: {
+    sortBy: 'score',
+    sortOrder: 'asc',
+  },
+}
+
+export const reviewSortLabelMap = {
+  [ReviewSortOption.REVIEW_DATE_NEW]: '최신순',
+  [ReviewSortOption.RATING_HIGH]: '평점 높은 순',
+  [ReviewSortOption.RATING_LOW]: '평점 낮은 순',
+}

@@ -6,7 +6,7 @@ import SearchResult from './_components/SearchResult'
 function SearchPage() {
   return (
     <SearchKeywordProvider>
-      <div className={page()}>
+      <div className={page('gap-2')}>
         <SearchHeader />
         <SearchResult />
       </div>

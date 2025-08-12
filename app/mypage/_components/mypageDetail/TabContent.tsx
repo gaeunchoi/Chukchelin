@@ -4,12 +4,12 @@ import { useState } from 'react'
 import TabForRestaurant from './TabForRestaurant'
 import TabForReview from './TabForReview'
 import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
-import { useWriteReviews } from '@/hooks/useWriteReviews'
+import { useMyReviews } from '@/hooks/useMyReviews'
 import { flexCol, flexRowICenter } from '@/style/custom'
 
 function TabContent() {
   const { data: savedRestaurants } = useSavedRestaurants(null)
-  const { data: writeReviews } = useWriteReviews()
+  const { data: myReview } = useMyReviews()
   const [activeTab, setActiveTab] = useState<
     'restaurants' | 'reviews'
   >('restaurants')
@@ -32,12 +32,13 @@ function TabContent() {
             'py-3',
             'box-border',
             'border-b-3',
-            activeTab === 'restaurants'
-              ? 'border-black font-bold'
-              : 'border-transparent',
+            'border-transparent',
+            {
+              'border-black font-bold': activeTab === 'restaurants',
+            },
           )}
         >
-          저장한 맛집 {savedRestaurants?.length}
+          저장한 맛집 {savedRestaurants?.length || '0'}
         </div>
         <div
           onClick={() => setActiveTab('reviews')}
@@ -45,12 +46,13 @@ function TabContent() {
             'py-3',
             'box-border',
             'border-b-3',
-            activeTab === 'reviews'
-              ? 'border-black font-bold'
-              : 'border-transparent',
+            'border-transparent',
+            {
+              'border-black font-bold': activeTab === 'reviews',
+            },
           )}
         >
-          작성한 리뷰 {writeReviews?.length}
+          작성한 리뷰 {myReview?.length || '0'}
         </div>
       </div>
       {activeTab === 'restaurants' && <TabForRestaurant />}

@@ -1,0 +1,43 @@
+'use client'
+import { useRestaurant } from '@/hooks/useRestaurant'
+import { flexColICenter, page, stickyButton } from '@/style/custom'
+import { useParams, useRouter } from 'next/navigation'
+import RestaurantHeader from '../_components/restaurant_detail/RestaurantHeader'
+import RestaurantItem from '@/components/restaurant/RestaurantItem'
+import RestaurantReviewList from '../_components/restaurant_detail/RestaurantReviewList'
+import { Button } from '@/components/ui/button'
+
+function RestaurantPage() {
+  const router = useRouter()
+  const params = useParams()
+  const restaurantId = parseInt(params.id as string)
+  const { data: restaurant } = useRestaurant(restaurantId)
+
+  const handleReviewWriteButtonClick = () => {
+    router.push(`/restaurant/write?restaurantId=${restaurantId}`)
+  }
+
+  if (restaurantId === undefined) {
+    return (
+      <div className={flexColICenter('w-full', 'h-full')}>
+        레스토랑 아이디가 존재하지 않습니다.
+      </div>
+    )
+  }
+
+  return (
+    <div className={page()}>
+      <RestaurantHeader restaurantId={restaurantId} />
+      <RestaurantItem restaurant={restaurant} />
+      <RestaurantReviewList restaurantId={restaurantId} />
+      <Button
+        className={stickyButton()}
+        onClick={handleReviewWriteButtonClick}
+      >
+        리뷰 작성하기
+      </Button>
+    </div>
+  )
+}
+
+export default RestaurantPage

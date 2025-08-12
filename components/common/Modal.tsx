@@ -27,12 +27,10 @@ function Modal() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          {!contents.onAction && (
-            <AlertDialogCancel>닫기</AlertDialogCancel>
-          )}
+          <AlertDialogCancel>취소</AlertDialogCancel>
           {contents.onAction && (
             <AlertDialogAction onClick={contents.onAction}>
-              {contents.actionBtnText}
+              {contents.actionBtnText || '확인'}
             </AlertDialogAction>
           )}
         </AlertDialogFooter>

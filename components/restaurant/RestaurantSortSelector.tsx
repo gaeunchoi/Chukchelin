@@ -30,9 +30,14 @@ function RestaurantSortSelector({
   }
 
   const triggerContent = (
-    <div className="flex items-center gap-1 text-[14px]">
-      <span>{selectedOption}</span>
-      <ChevronDown size={16} />
+    <div className={flexRowICenter('gap-1')}>
+      <span className="text-[14px] font-medium">
+        {selectedOption}
+      </span>
+      <ChevronDown
+        size={16}
+        strokeWidth={3}
+      />
     </div>
   )
 
@@ -42,7 +47,7 @@ function RestaurantSortSelector({
       onOpenChange={setOpen}
     >
       <DrawerTrigger>{triggerContent}</DrawerTrigger>
-      <DrawerContent className={flexCol('h-[40%]', 'z-1000')}>
+      <DrawerContent className={flexCol('z-1000', 'pb-8')}>
         <DrawerHeader className={flexCol('gap-8', 'flex-shrink-0')}>
           <DrawerTitle
             className={flexCol(
@@ -61,7 +66,7 @@ function RestaurantSortSelector({
             </div>
           </DrawerDescription>
         </DrawerHeader>
-        <div className="flex-1 overflow-y-auto px-4 pb-4">
+        <div className="flex-1 overflow-y-auto px-6 pb-4">
           <div className={flexCol('w-full', 'gap-8')}>
             {options.map((option) => (
               <div

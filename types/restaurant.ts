@@ -21,6 +21,7 @@ export type Restaurant = {
   user_favorite_count: number
   category_id: number
   distance: number
+  home_recommend_count: number
   restaurant_category: RestaurantCategory
   stadium?: Stadium
 }

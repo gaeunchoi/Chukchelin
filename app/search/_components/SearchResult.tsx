@@ -1,7 +1,6 @@
 'use client'
 import RestaurantItem from '@/components/restaurant/RestaurantItem'
-import StadiumItem from '@/components/stadium/StadiumItem'
-import StadiumMap from '@/components/stadium/StadiumMap'
+import StadiumWithMap from '@/components/map/StadiumWithMap'
 import { useSearchKeywordContext } from '@/contexts/SearchKeywordContext'
 import { useSearchResult } from '@/hooks/useSearchResult'
 import {
@@ -33,9 +32,18 @@ const SearchGuideItem = ({
   </div>
 )
 
-const NoResults = () => (
-  <div className={flexCol('gap-3', 'p-2')}>
-    <div className="text-[14px] text-[#6A6A6A]">
+const LoadingResult = () => (
+  <div className={flexColIJCenter('w-full', 'gap-4')}>
+    <div className="text-[14px] font-semibold text-[#A5A5A5]">
+      검색중입니다
+    </div>
+    <LoadingSpinner width={200} />
+  </div>
+)
+
+const EmptyResult = () => (
+  <div className={flexCol('flex-1', 'w-full')}>
+    <div className="text-[14px] text-[#6A6A6A] font-semibold">
       검색 결과가 없습니다.
     </div>
   </div>
@@ -80,57 +88,31 @@ function SearchResult() {
     [],
   )
 
-  const noResults = useMemo(
-    () => (
-      <div className={flexCol('flex-1', 'w-full')}>
-        <div className="text-[14px] font-semibold text-[#A5A5A5]">
-          <NoResults />
-        </div>
-      </div>
-    ),
-    [],
-  )
-
-  const loadingResult = useMemo(
-    () => (
-      <div className={flexColIJCenter('w-full', 'gap-4')}>
-        <div className="text-[14px] font-semibold text-[#A5A5A5]">
-          검색중입니다
-        </div>
-        <LoadingSpinner width={200} />
-      </div>
-    ),
-    [],
-  )
-
   if (searchKeyword.trim() === '') {
     return searchGuide
   }
 
-  if (isLoading) return loadingResult
+  if (isLoading) return <LoadingResult />
   if (
     searchResult?.stadiums.length === 0 &&
     searchResult?.restaurants.length === 0
   ) {
-    return noResults
+    return <EmptyResult />
   }
 
   return (
     <div className={flexCol('w-full')}>
       <div className="text-[14px] font-semibold text-[#A5A5A5]">
         <div className={flexCol('gap-12', 'p-2')}>
-          <div className={flexCol('gap-3')}>
+          <div className={flexCol('gap-8')}>
             <div className="text-[14px] font-bold">
               구장 ({searchResult?.stadiums.length})
             </div>
             {searchResult?.stadiums.map((stadium: Stadium) => (
-              <div
-                className={flexColIJCenter('gap-3')}
+              <StadiumWithMap
                 key={stadium.id}
-              >
-                <StadiumItem stadium={stadium} />
-                <StadiumMap stadium={stadium} />
-              </div>
+                stadium={stadium}
+              />
             ))}
           </div>
           <div className={flexCol('gap-3')}>
@@ -142,6 +124,7 @@ function SearchResult() {
                 (restaurant: Restaurant) => {
                   return (
                     <RestaurantItem
+                      isRow
                       restaurant={restaurant}
                       key={restaurant.id}
                     />

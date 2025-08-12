@@ -1,19 +1,18 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { flexColICenter } from '@/style/custom'
+import { flexColICenter, stickyButton } from '@/style/custom'
 import { Stadium } from '@/types/stadium'
 import { useState, useCallback, useEffect } from 'react'
 import { updateUser } from '@/services/user'
 import { useModalContext } from '@/contexts/ModalContext'
 import { useRouter } from 'next/navigation'
-import Nickname from './edit/Nickname'
-import HomeStadium from './edit/HomeStadium'
+import Nickname from './Nickname'
+import HomeStadium from './HomeStadium'
 import { useUser } from '@/hooks/useUser'
-import { mutate } from 'swr'
 
 function UserProfileForm() {
   const router = useRouter()
-  const { data: loggedInUser } = useUser()
+  const { data: loggedInUser, mutate: mutateUser } = useUser()
   const { openModal } = useModalContext()
 
   const [nickname, setNickname] = useState<string>('')
@@ -59,7 +58,7 @@ function UserProfileForm() {
         favorite_team_id: selectedStadium?.id || 1,
       })
 
-      await mutate('/user/me', updatedUser, false)
+      mutateUser(updatedUser)
 
       showSuccessModal()
     } catch (error) {
@@ -70,6 +69,7 @@ function UserProfileForm() {
     selectedStadium?.id,
     showSuccessModal,
     showErrorModal,
+    mutateUser,
   ])
 
   return (
@@ -85,7 +85,7 @@ function UserProfileForm() {
         onChange={setSelectedStadium}
       />
       <Button
-        className="sticky bottom-4 w-full p-6 z-10 font-semibold"
+        className={stickyButton()}
         onClick={handleEditButtonClick}
       >
         수정하기

@@ -8,3 +8,8 @@ export const updateUser = async (payload: {
   const res = await axiosInstance.patch('/user/me', payload)
   return res.data
 }
+
+export const randomProfileImage = async () => {
+  const res = await axiosInstance.put('/user/me/profile-image')
+  return res.data
+}

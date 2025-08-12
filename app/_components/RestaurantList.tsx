@@ -1,12 +1,18 @@
-import { flexColIJCenter, flexRowICenter } from '@/style/custom'
-import { useMainStadiumContext } from '@/contexts/MainStadiumContext'
+import { flexCol, flexRowICenter } from '@/style/custom'
+import { useMainStadiumIdContext } from '@/contexts/MainStadiumIdContext'
+import { useSelectScheduleContext } from '@/contexts/SelectScheduleContext'
+import { useStadium } from '@/hooks/useStadium'
 import { useState } from 'react'
-import RestaurantWithMap from '@/components/restaurant/RestaurantWithMap'
-import RestaurantSortSelector from '@/components/restaurant/RestaurantSortSelector'
 import { SortOption, sortLabelMap } from '@/constants/sortLabel'
+import RestaurantSortSelector from '@/components/restaurant/RestaurantSortSelector'
+import RestaurantWithMap from '@/components/map/RestaurantWithMap'
 
 function RestaurantList() {
-  const { mainStadium } = useMainStadiumContext()
+  const { mainStadiumId } = useMainStadiumIdContext()
+  const { selectedSchedule } = useSelectScheduleContext()
+  const { data: stadium } = useStadium(
+    selectedSchedule?.stadium?.id || null,
+  )
   const [sortOption, setSortOption] = useState<SortOption>(
     SortOption.RATING_HIGH,
   )
@@ -16,36 +22,15 @@ function RestaurantList() {
     label: sortLabelMap[option],
   }))
 
-  if (!mainStadium) {
-    return (
-      <div
-        className={flexColIJCenter(
-          'w-full',
-          'h-full',
-          '-mt-12',
-          'text-sm',
-          'text-gray-500',
-          'gap-2',
-        )}
-      >
-        <p className="text-lg font-semibold mb-2 text-center">
-          왼쪽 상단에서 구장을 선택해주세요
-        </p>
-        <div className={flexColIJCenter('gap-0', 'text-center')}>
-          <p>마이페이지에서 좋아하는 팀을 설정하면</p>
-          <p>해당 구장 인근의 맛집을 바로 확인할 수 있습니다.</p>
-        </div>
-      </div>
-    )
-  }
+  if (!mainStadiumId) return null
 
   return (
-    <div className={flexColIJCenter('flex-1', 'w-full', 'gap-3')}>
+    <div className={flexCol('flex-1', 'w-full', 'gap-3')}>
       <div className={flexRowICenter('w-full', 'justify-between')}>
         <div className="text-[14px]">
-          {mainStadium?.name} 주변{' '}
+          {stadium?.name} 주변{' '}
           <span className="font-bold">
-            맛집 {mainStadium?.restaurant_count || '-'}개
+            맛집 {stadium?.restaurant_count || '-'}개
           </span>
         </div>
         <RestaurantSortSelector
@@ -61,7 +46,10 @@ function RestaurantList() {
           }}
         />
       </div>
-      <RestaurantWithMap sortOption={sortOption} />
+      <RestaurantWithMap
+        sortOption={sortOption}
+        stadiumId={selectedSchedule?.stadium.id || null}
+      />
     </div>
   )
 }

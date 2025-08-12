@@ -1,15 +1,32 @@
-type ScheduleCardProps = {
-  isFirst: boolean
-}
+'use client'
 
+import { useEffect, useState } from 'react'
+import { useMainStadiumIdContext } from '@/contexts/MainStadiumIdContext'
 import { cn } from '@/lib/utils'
 import { flexCol } from '@/style/custom'
+import { Schedule } from '@/types/schedule'
+import { Team } from '@/types/stadium'
+import { formatDate } from '@/utils/formatDate'
 
-function ScheduleCard({ isFirst }: ScheduleCardProps) {
-  const mainTextColor = isFirst ? 'text-white' : 'text-black'
-  const subTextColor = isFirst ? 'text-white' : 'text-[#6D6D6D]'
+type ScheduleCardProps = {
+  isCurrent: boolean
+  schedule: Schedule
+  onClick: (schedule: Schedule, opposingTeam: Team) => void
+}
 
-  const patternStyle = isFirst
+function ScheduleCard({
+  isCurrent,
+  schedule,
+  onClick,
+}: ScheduleCardProps) {
+  const { mainStadiumId } = useMainStadiumIdContext()
+  const [opposingTeam, setOpposingTeam] = useState<Team | null>(null)
+  const [isAway, setIsAway] = useState<boolean>(false)
+
+  const mainTextColor = isCurrent ? 'text-white' : 'text-black'
+  const subTextColor = isCurrent ? 'text-[#E6E6E6]' : 'text-[#6D6D6D]'
+
+  const patternStyle = isCurrent
     ? {
         backgroundImage: 'url(/schedule-card-pattern.png)',
         backgroundSize: 'auto',
@@ -19,36 +36,50 @@ function ScheduleCard({ isFirst }: ScheduleCardProps) {
       }
     : {}
 
+  useEffect(() => {
+    setOpposingTeam(
+      schedule.home_team_id !== mainStadiumId
+        ? schedule.home_team
+        : schedule.away_team,
+    )
+    setIsAway(schedule?.home_team_id !== mainStadiumId)
+  }, [schedule, mainStadiumId, setOpposingTeam])
+
   return (
     <div
       className={flexCol(
+        'justify-center',
         'gap-3',
         'px-5',
         'py-4',
         'rounded-md',
-        'min-w-[150px]',
-        'min-h-97px',
+        'min-w-[170px]',
+        'min-h-[120px]',
         'relative',
         {
-          'bg-black': isFirst,
-          'bg-[#F9F9F9]': !isFirst,
+          'bg-black': isCurrent,
+          'bg-[#F9F9F9]': !isCurrent,
         },
       )}
+      onClick={() => {
+        if (!opposingTeam) return
+        onClick(schedule, opposingTeam)
+      }}
     >
-      {isFirst && (
+      {isCurrent && (
         <div
           className="absolute inset-0 rounded-md"
           style={patternStyle}
         />
       )}
       <div className={flexCol('gap-1', 'relative', 'z-10')}>
-        <div className={cn('text-[14px]', 'font-bold', subTextColor)}>
-          숭의 아레나 파크
-        </div>
         <div
           className={cn('text-[16px]', 'font-bold', mainTextColor)}
         >
-          vs 인천(AWAY)
+          vs {opposingTeam?.short_name}({isAway ? 'Away' : 'Home'})
+        </div>
+        <div className={cn('text-[14px]', 'font-bold', subTextColor)}>
+          {schedule.stadium.name}
         </div>
       </div>
       <div
@@ -60,7 +91,7 @@ function ScheduleCard({ isFirst }: ScheduleCardProps) {
           'z-10',
         )}
       >
-        8월 2일 17시 00분
+        {formatDate(schedule.schedule_at)}
       </div>
     </div>
   )

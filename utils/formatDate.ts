@@ -1,7 +1,5 @@
+import dayjs from 'dayjs'
+
 export const formatDate = (date: string) => {
-  const dateObj = new Date(date)
-  const year = dateObj.getFullYear()
-  const month = dateObj.getMonth() + 1
-  const day = dateObj.getDate()
-  return `${year}년 ${month}월 ${day}일`
+  return dayjs(date).format('MM월 DD일 HH시 mm분')
 }

@@ -3,14 +3,16 @@ import { ClassValue } from 'clsx'
 
 export const page = (...args: ClassValue[]) =>
   cn(
-    'w-full',
     'flex',
     'flex-col',
     'items-center',
     'justify-start',
     'h-screen',
-    'p-4',
+    'p-6',
     'gap-6',
+    'max-w-[450px]',
+    'w-full',
+    'mx-auto',
     ...args,
   )
 
@@ -71,5 +73,16 @@ export const header = (...args: ClassValue[]) =>
     'flex-row',
     'items-center',
     'gap-2',
+    ...args,
+  )
+
+export const stickyButton = (...args: ClassValue[]) =>
+  cn(
+    'sticky',
+    'bottom-4',
+    'w-full',
+    'p-6',
+    'z-10',
+    'font-semibold',
     ...args,
   )

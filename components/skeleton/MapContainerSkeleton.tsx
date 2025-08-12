@@ -1,11 +1,11 @@
 import Skeleton from 'react-loading-skeleton'
 
-function StadiumMapSkeleton() {
+function MapContainerSkeleton() {
   return (
     <div className="w-full">
-      <Skeleton height={170} />
+      <Skeleton height={200} />
     </div>
   )
 }
 
-export default StadiumMapSkeleton
+export default MapContainerSkeleton

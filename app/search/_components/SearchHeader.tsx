@@ -33,6 +33,7 @@ function SearchHeader() {
         <ChevronLeft
           size={18}
           color="black"
+          strokeWidth={3}
           onClick={() => router.back()}
         />
         <div

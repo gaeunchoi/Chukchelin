@@ -5,7 +5,7 @@ type StarScoreProps = {
   score: number
 }
 
-function StarScore({ score }: StarScoreProps) {
+function ScoreRating({ score }: StarScoreProps) {
   return (
     <div className={flexRowICenter('gap-1')}>
       <div className={flexRowICenter('gap-0.5')}>
@@ -23,4 +23,4 @@ function StarScore({ score }: StarScoreProps) {
   )
 }
 
-export default StarScore
+export default ScoreRating

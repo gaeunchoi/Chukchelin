@@ -10,6 +10,7 @@ function CheckSelected() {
       <Check
         size={16}
         color="#4452C3"
+        strokeWidth={3}
       />
     </div>
   )

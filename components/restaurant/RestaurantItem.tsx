@@ -1,44 +1,29 @@
 import {
-  badge,
-  flexCol,
-  flexRow,
+  flexColIJCenter,
+  flexRowIJCenter,
   flexRowICenter,
 } from '@/style/custom'
 import { Restaurant } from '@/types/restaurant'
-import { Bookmark, Star } from 'lucide-react'
+import { Bookmark } from 'lucide-react'
 import CategoryImage from '../image/CategoryImage'
 import { useRouter } from 'next/navigation'
 import formatDistance from '@/utils/formatDistance'
+import ScoreRating from '../common/ScoreRating'
+import RestaurantBadge from './RestaurantBadge'
+import { cn } from '@/lib/utils'
+import RestaurantItemSkeleton from '../skeleton/RestaurantItemSkeleton'
 
 type RestaurantItemProps = {
   restaurant: Restaurant
+  isRow?: boolean
 }
-
-const RatingContent = ({
-  restaurant,
-}: {
-  restaurant: Restaurant
-}) => (
-  <div className={flexRowICenter('gap-1')}>
-    <Star
-      size={15}
-      fill="black"
-    />
-    <div className="text-[13px] font-bold text-black">
-      {restaurant.review_average_score?.toFixed(1) || '0.0'}
-    </div>
-    <div className="text-[13px] font-medium text-gray-400">
-      · {restaurant.restaurant_category.name} ·{' '}
-      {restaurant.review_count}개의 리뷰
-    </div>
-  </div>
-)
 
 const FavoriteCountContent = ({ count }: { count: number }) => (
   <div className={flexRowICenter('gap-0.5')}>
     <Bookmark
       size={15}
       color="black"
+      strokeWidth={3}
     />
     <div className="text-[13px] font-semibold text-black">
       {count}
@@ -47,52 +32,74 @@ const FavoriteCountContent = ({ count }: { count: number }) => (
 )
 
 const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
-  <div className={flexRowICenter('gap-1')}>
-    <div className={badge('text-white', 'bg-black', 'bodrer-black')}>
-      구장에서 {formatDistance(restaurant.distance)}
-    </div>
-    <div
-      className={badge(
-        'text-gray-900',
-        'bg-white',
-        'border-gray-200',
-      )}
-    >
-      홈팬 2명이 추천(수정 예정)
-    </div>
+  <div className={flexRowICenter('gap-1', 'flex-wrap')}>
+    <RestaurantBadge
+      isOutline={false}
+      content={`구장에서 ${formatDistance(restaurant.distance)}`}
+    />
+    {restaurant.home_recommend_count > 0 && (
+      <RestaurantBadge
+        isOutline
+        content={`홈팬 ${restaurant.home_recommend_count}명이 추천`}
+      />
+    )}
   </div>
 )
 
-function RestaurantItem({ restaurant }: RestaurantItemProps) {
+function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   const router = useRouter()
 
   const handleRestaurantClick = () => {
     router.push(`/restaurant/${restaurant.id}`)
   }
 
+  if (!restaurant) return <RestaurantItemSkeleton />
   return (
     <div
-      className={flexRow('w-full', 'gap-3', 'items-start')}
-      onClick={handleRestaurantClick}
+      className={cn('w-full', 'flex', 'gap-3', {
+        'flex-row items-start cursor-pointer': isRow,
+        'flex-col items-center justify-center': !isRow,
+      })}
+      onClick={isRow ? handleRestaurantClick : undefined}
     >
       <CategoryImage
         url={restaurant.restaurant_category.image_url}
         size={48}
       />
 
-      <div className={flexCol('w-full', 'gap-3')}>
-        <div className={flexCol('w-full', 'gap-1')}>
+      <div
+        className={flexColIJCenter(
+          'w-full',
+          'gap-3',
+          isRow && 'items-start',
+        )}
+      >
+        <div
+          className={flexColIJCenter(
+            'w-full',
+            isRow && 'items-start gap-1',
+          )}
+        >
           <div
-            className={flexRowICenter('w-full', 'justify-between')}
+            className={flexRowIJCenter(
+              'w-full',
+              isRow && 'justify-between',
+            )}
           >
             <div className="text-[15px] font-bold text-black">
               {restaurant.name}
             </div>
-            <FavoriteCountContent
-              count={restaurant.user_favorite_count}
-            />
+            {isRow && (
+              <FavoriteCountContent
+                count={restaurant.user_favorite_count}
+              />
+            )}
           </div>
-          <RatingContent restaurant={restaurant} />
+          <ScoreRating
+            isShort
+            score={restaurant.review_average_score || 0}
+            restaurant={restaurant}
+          />
         </div>
         <TagsList restaurant={restaurant} />
       </div>

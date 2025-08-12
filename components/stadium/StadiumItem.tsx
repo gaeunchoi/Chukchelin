@@ -8,12 +8,14 @@ type StadiumItemProps = {
   stadium: Stadium
   isSelected?: boolean
   onSelect?: (stadium: Stadium) => void
+  onClick?: (stadiumId: number) => void
 }
 
 function StadiumItem({
   stadium,
   isSelected,
   onSelect,
+  onClick,
 }: StadiumItemProps) {
   const stadiumItemRightContents = isSelected ? (
     <CheckSelected />
@@ -33,7 +35,10 @@ function StadiumItem({
         'rounded-lg',
         'transition-colors',
       )}
-      onClick={() => onSelect?.(stadium)}
+      onClick={() => {
+        onSelect?.(stadium)
+        onClick?.(stadium.id)
+      }}
     >
       <div className={flexRowICenter()}>
         <LogoImage

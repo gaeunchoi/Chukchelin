@@ -1,9 +1,9 @@
-import StadiumMapSkeleton from '@/components/skeleton/StadiumMapSkeleton'
+import MapContainerSkeleton from '@/components/skeleton/MapContainerSkeleton'
 import { SavedRestaurant, Restaurant } from '@/types/restaurant'
 import { Stadium } from '@/types/stadium'
 import { useEffect, useRef } from 'react'
 
-type StadiumMapProps = {
+type MapContainerProps = {
   stadium: Stadium | null
   restaurants?: SavedRestaurant[] | Restaurant[]
 }
@@ -24,7 +24,7 @@ const markerInfomation = (restaurant: Restaurant) => {
     </div>`
 }
 
-function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
+function MapContainer({ stadium, restaurants }: MapContainerProps) {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -54,7 +54,7 @@ function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
       map,
       title: stadium.name,
       icon: {
-        url: stadium.team[0].logo_image_url,
+        url: stadium.team[0]?.logo_image_url || '/logo/kleague.png',
         size: new window.naver.maps.Size(60, 60),
         scaledSize: new window.naver.maps.Size(60, 60),
         origin: new window.naver.maps.Point(0, 0),
@@ -101,7 +101,7 @@ function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
   }, [stadium, restaurants])
 
   if (!stadium) {
-    return <StadiumMapSkeleton />
+    return <MapContainerSkeleton />
   }
 
   return (
@@ -112,4 +112,4 @@ function StadiumMap({ stadium, restaurants }: StadiumMapProps) {
   )
 }
 
-export default StadiumMap
+export default MapContainer

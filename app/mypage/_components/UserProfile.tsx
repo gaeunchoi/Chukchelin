@@ -9,6 +9,8 @@ import {
   flexColICenter,
   flexRowICenter,
 } from '@/style/custom'
+import ProfileImage from '@/components/image/ProfileImage'
+import ProfileImageEditButton from './edit/ProfileImageEditButton'
 
 type UserProfileProps = {
   editMode: boolean
@@ -24,13 +26,12 @@ function UserProfile({ editMode }: UserProfileProps) {
   if (editMode) {
     return (
       <div className={flexColICenter('gap-7')}>
-        <img
-          src={loggedInUser.profile_image_url}
-          alt="profile image"
-          width={120}
-          height={120}
-          className="rounded-full object-cover"
-        />
+        <ProfileImage
+          url={loggedInUser.profile_image_url}
+          size={120}
+        >
+          <ProfileImageEditButton />
+        </ProfileImage>
         <div className={flexColICenter()}>
           <div className={flexRowICenter('gap-1')}>
             <span className="font-bold text-[18px]">
@@ -47,7 +48,7 @@ function UserProfile({ editMode }: UserProfileProps) {
             <span className="font-bold">{loggedInUser.id}</span>번째
             가입 · 평균 별점{' '}
             <span className="font-bold">
-              {loggedInUser.review_averate_score || '0.0'}
+              {loggedInUser.review_average_score?.toFixed(1) || '0.0'}
             </span>
           </div>
         </div>
@@ -57,12 +58,9 @@ function UserProfile({ editMode }: UserProfileProps) {
 
   return (
     <div className={flexRowICenter('w-full', 'gap-3')}>
-      <img
-        src={loggedInUser.profile_image_url}
-        alt="profile image"
-        width={64}
-        height={64}
-        className="rounded-full object-cover"
+      <ProfileImage
+        url={loggedInUser.profile_image_url}
+        size={64}
       />
       <div className={flexRowICenter('justify-between', 'w-full')}>
         <div className={flexCol('justify-start')}>
@@ -79,7 +77,7 @@ function UserProfile({ editMode }: UserProfileProps) {
             <span className="font-bold">{loggedInUser.id}</span>번째
             가입 · 평균 별점{' '}
             <span className="font-bold">
-              {loggedInUser.review_averate_score || '0.0'}
+              {loggedInUser.review_average_score?.toFixed(1) || '0.0'}
             </span>
           </div>
         </div>
@@ -87,6 +85,7 @@ function UserProfile({ editMode }: UserProfileProps) {
           <Settings
             size={24}
             color="black"
+            strokeWidth={3}
             onClick={() => router.push('/mypage/edit')}
           />
         </div>

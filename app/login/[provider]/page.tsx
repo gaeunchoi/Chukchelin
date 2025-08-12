@@ -7,12 +7,11 @@ import { useModalContext } from '@/contexts/ModalContext'
 import { login } from '@/services/auth'
 import { useUser } from '@/hooks/useUser'
 import { User } from '@/types/user'
-import { flexColICenter } from '@/style/custom'
+import { flexColICenter, flexColIJCenter } from '@/style/custom'
 
 function ProviderPage() {
   const router = useRouter()
-  const params = useSearchParams()
-  const code = params.get('code')
+  const code = useSearchParams().get('code')
   const setAccessToken = useAuthStore((state) => state.setAccessToken)
   const { openModal } = useModalContext()
   const { mutate: mutateUser } = useUser()
@@ -46,7 +45,7 @@ function ProviderPage() {
       openModal({
         title: '로그인 실패',
         description: errorMessage,
-        actionBtnText: '다시 로그인하러 가기',
+        actionBtnText: '다시 시도',
         onAction: () => router.push('/login'),
       })
     },
@@ -70,26 +69,28 @@ function ProviderPage() {
     } catch (error) {
       showErrorModal(error)
     }
-  }, [code])
+  }, [
+    code,
+    setAccessToken,
+    mutateUser,
+    showSuccessModal,
+    showErrorModal,
+  ])
 
   useEffect(() => {
     handleLogin()
-  }, [])
+  }, [handleLogin])
 
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full mx-4">
-        <div className={flexColICenter('gap-6')}>
-          <div className="text-center space-y-2">
-            <h2 className="text-xl font-bold text-gray-800">
-              로그인 진행중
-            </h2>
-            <p className="text-gray-600 text-sm">
-              잠시만 기다려주세요
-            </p>
-          </div>
-          <LoadingSpinner width={200} />
+    <div className={flexColIJCenter('min-h-screen', 'bg-slate-100')}>
+      <div className={flexColICenter('gap-6')}>
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-bold text-gray-800">
+            로그인 진행중
+          </h2>
+          <p className="text-gray-600 text-sm">잠시만 기다려주세요</p>
         </div>
+        <LoadingSpinner width={200} />
       </div>
     </div>
   )
