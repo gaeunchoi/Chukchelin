@@ -9,6 +9,7 @@ export const page = (...args: ClassValue[]) =>
     'justify-start',
     'h-screen',
     'p-6',
+    'pt-0',
     'gap-6',
     'max-w-[450px]',
     'w-full',
