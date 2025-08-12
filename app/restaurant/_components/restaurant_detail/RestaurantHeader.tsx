@@ -6,7 +6,6 @@ import { Bookmark, ChevronLeft, Share2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useDebouncedCallback } from 'use-debounce'
 import { Restaurant } from '@/types/restaurant'
-import { useEffect, useState } from 'react'
 
 type RestaurantHeaderProps = {
   restaurantId: number
@@ -16,29 +15,22 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   const router = useRouter()
   const { data: restaurant, mutate: mutateRestaurant } =
     useRestaurant(restaurantId)
-  const [kakao, setKakao] = useState<typeof window.Kakao | null>(null)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.Kakao) {
-      setKakao(window.Kakao)
-    }
-  }, [])
 
   const handleBack = () => {
     router.back()
   }
 
   const handleShare = async (restaurant: Restaurant) => {
-    if (!restaurant || !kakao) return
+    if (!restaurant) return
 
-    kakao.Share.sendDefault({
+    window.Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
         title: `[${restaurant.restaurant_category.name}] ${restaurant.name}`,
         description: restaurant.address,
         link: {
-          webUrl: `${window.location.origin}/restaurant/${restaurant.id}`,
-          mobileWebUrl: `${window.location.origin}/restaurant/${restaurant.id}`,
+          webUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
+          mobileWebUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
         },
       },
       social: {
@@ -65,12 +57,18 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
         onClick={handleBack}
       />
       <div className={flexRowICenter('gap-4')}>
-        <Share2
-          size={18}
-          color="black"
-          strokeWidth={3}
-          onClick={() => handleShare(restaurant)}
-        />
+        <div
+          onClick={() => {
+            handleShare(restaurant)
+          }}
+          className="cursor-pointer"
+        >
+          <Share2
+            size={18}
+            color="black"
+            strokeWidth={3}
+          />
+        </div>
         <div
           className={flexRowICenter('gap-1')}
           onClick={handleFavorite}
