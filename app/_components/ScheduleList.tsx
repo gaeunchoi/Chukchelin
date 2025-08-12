@@ -19,7 +19,7 @@ function ScheduleList() {
     searchParams.get('mainStadiumId') as string,
   )
   const scheduleId = searchParams.get('scheduleId')
-  const { selectedSchedule, setSelectedSchedule } =
+  const { selectedSchedule, toggleSchedule, setSelectedSchedule } =
     useSelectedScheduleContext()
 
   const { data: schedules } = useTeamSchedules(
@@ -58,10 +58,15 @@ function ScheduleList() {
   }
 
   const handleScheduleClick = (schedule: Schedule) => {
-    setSelectedSchedule(schedule)
+    toggleSchedule(schedule)
 
     const currentParams = new URLSearchParams(searchParams.toString())
-    currentParams.set('scheduleId', schedule.id.toString())
+
+    if (selectedSchedule?.id === schedule.id) {
+      currentParams.delete('scheduleId')
+    } else {
+      currentParams.set('scheduleId', schedule.id.toString())
+    }
 
     const newUrl = `/?${currentParams.toString()}`
     window.history.pushState(null, '', newUrl)

@@ -4,6 +4,7 @@ import { createContext, ReactNode, useContext, useState } from 'react'
 type SelectedScheduleContextType = {
   selectedSchedule: Schedule | null
   setSelectedSchedule: (schedule: Schedule | null) => void
+  toggleSchedule: (schedule: Schedule) => void
 }
 
 const SelectedScheduleContext =
@@ -17,11 +18,20 @@ export const SelectedScheduleProvider = ({
   const [selectedSchedule, setSelectedSchedule] =
     useState<Schedule | null>(null)
 
+  const toggleSchedule = (schedule: Schedule) => {
+    if (selectedSchedule?.id === schedule.id) {
+      setSelectedSchedule(null)
+    } else {
+      setSelectedSchedule(schedule)
+    }
+  }
+
   return (
     <SelectedScheduleContext.Provider
       value={{
         selectedSchedule,
         setSelectedSchedule,
+        toggleSchedule,
       }}
     >
       {children}
