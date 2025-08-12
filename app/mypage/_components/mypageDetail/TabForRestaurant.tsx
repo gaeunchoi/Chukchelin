@@ -1,4 +1,4 @@
-import { useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
 import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
 import { useStadium } from '@/hooks/useStadium'
@@ -30,6 +30,7 @@ const EmptyRestaurantsMessage = ({
 )
 
 function TabForRestaurant() {
+  const pathname = usePathname()
   const searchParams = useSearchParams()
   const mainStadiumId = parseInt(
     searchParams.get('mainStadiumId') as string,
@@ -54,9 +55,7 @@ function TabForRestaurant() {
     const currentParams = new URLSearchParams(searchParams.toString())
     currentParams.set('mainStadiumId', stadiumId.toString())
 
-    const newUrl = `${
-      window.location.pathname
-    }?${currentParams.toString()}`
+    const newUrl = `${pathname}?${currentParams.toString()}`
     window.history.pushState(null, '', newUrl)
   }
 

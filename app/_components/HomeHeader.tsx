@@ -16,7 +16,7 @@ function HomeHeader() {
   const handleStadiumSelect = (stadiumId: number) => {
     setSelectedSchedule(null)
 
-    const newUrl = `?mainStadiumId=${stadiumId}`
+    const newUrl = `/?mainStadiumId=${stadiumId}`
     window.history.pushState(null, '', newUrl)
   }
 

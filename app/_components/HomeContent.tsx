@@ -15,8 +15,7 @@ function HomeContent() {
         searchParams.toString(),
       )
       currentParams.set('mainStadiumId', mainStadiumId.toString())
-
-      const newUrl = `?${currentParams.toString()}`
+      const newUrl = `/?${currentParams.toString()}`
       window.history.pushState(null, '', newUrl)
     }
   }, [mainStadiumId, searchParams])

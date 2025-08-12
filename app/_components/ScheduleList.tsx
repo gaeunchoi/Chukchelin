@@ -63,7 +63,7 @@ function ScheduleList() {
     const currentParams = new URLSearchParams(searchParams.toString())
     currentParams.set('scheduleId', schedule.id.toString())
 
-    const newUrl = `${pathname}?${currentParams.toString()}`
+    const newUrl = `/?${currentParams.toString()}`
     window.history.pushState(null, '', newUrl)
   }
 
