@@ -1,44 +1,31 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
-import { header, page } from '@/style/custom'
-import HomeHeader from './_components/HomeHeader'
-import EmptyMainStadium from './_components/EmptyMainStadium'
+import { page } from '@/style/custom'
 import { SelectedScheduleProvider } from '@/contexts/SelectedScheduleContext'
-import ScheduleList from './_components/ScheduleList'
-import RestaurantList from './_components/RestaurantList'
+import { Suspense } from 'react'
+import HomeHeader from './_components/HomeHeader'
+import HomeContent from './_components/HomeContent'
 
 export default function Home() {
-  const searchParams = useSearchParams()
-  const mainStadiumId = searchParams.get('mainStadiumId')
-
-  useEffect(() => {
-    if (mainStadiumId) {
-      const currentParams = new URLSearchParams(
-        searchParams.toString(),
-      )
-      currentParams.set('mainStadiumId', mainStadiumId.toString())
-
-      const newUrl = `?${currentParams.toString()}`
-      window.history.pushState(null, '', newUrl)
-    }
-  }, [mainStadiumId])
-
   return (
     <SelectedScheduleProvider>
       <div className={page()}>
-        <Suspense fallback={<div className={header()} />}>
+        <Suspense
+          fallback={
+            <div className="h-16 bg-white border-b border-gray-200" />
+          }
+        >
           <HomeHeader />
         </Suspense>
 
-        {!mainStadiumId ? (
-          <EmptyMainStadium />
-        ) : (
-          <>
-            <ScheduleList />
-            <RestaurantList />
-          </>
-        )}
+        <Suspense
+          fallback={
+            <div className="flex-1 flex items-center justify-center">
+              Loading...
+            </div>
+          }
+        >
+          <HomeContent />
+        </Suspense>
       </div>
     </SelectedScheduleProvider>
   )

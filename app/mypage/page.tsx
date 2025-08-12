@@ -1,6 +1,7 @@
 'use client'
 import { useUser } from '@/hooks/useUser'
 import { page } from '@/style/custom'
+import { Suspense } from 'react'
 import NotAllowAuth from './_components/NotAllowAuth'
 import MypageHeader from './_components/MypageHeader'
 import UserProfile from './_components/UserProfile'
@@ -14,7 +15,9 @@ function MyPage() {
     <div className={page()}>
       <MypageHeader />
       <UserProfile editMode={false} />
-      <TabContent />
+      <Suspense fallback={<div>suspense loading</div>}>
+        <TabContent />
+      </Suspense>
     </div>
   )
 }
