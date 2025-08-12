@@ -5,14 +5,18 @@ type ReviewImageProps = {
 
 function ReviewImage({ url, size }: ReviewImageProps) {
   return (
-    <img
-      src={url}
-      alt="review image"
-      width={size}
-      height={size}
-      className="object-cover rounded-md"
-      style={{ minWidth: size, minHeight: size }}
-    />
+    <div
+      className="relative overflow-hidden rounded-md"
+      style={{ width: 120, height: 120 }}
+    >
+      <img
+        src={url}
+        alt="review image"
+        width={size}
+        height={size}
+        className="object-cover rounded-md"
+      />
+    </div>
   )
 }
 
