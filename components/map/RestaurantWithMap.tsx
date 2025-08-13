@@ -1,7 +1,7 @@
 import { useStadium } from '@/hooks/useStadium'
 import { useRestaurants } from '@/hooks/useRestaurants'
 import { flexColIJCenter } from '@/style/custom'
-import { Restaurant } from '@/types/restaurant'
+import { Restaurant, SavedRestaurant } from '@/types/restaurant'
 import { useEffect } from 'react'
 import { SortOption, sortConfig } from '@/constants/sortLabel'
 import RestaurantListSkeleton from '@/app/_components/skeleton/RestaurantListSkeleton'
@@ -11,28 +11,31 @@ import RestaurantItem from '../restaurant/RestaurantItem'
 type RestaurantWithMapProps = {
   stadiumId: number | null
   sortOption?: SortOption
-  restaurants?: Restaurant[]
+  restaurants?: SavedRestaurant[]
 }
 
 function RestaurantWithMap({
+  stadiumId,
   sortOption,
   restaurants,
-  stadiumId,
 }: RestaurantWithMapProps) {
   const { data: stadium } = useStadium(stadiumId)
+
   const { data: sortedRestaurants, mutate: mutateRestaurants } =
     useRestaurants(
       stadiumId,
       sortConfig[sortOption || SortOption.RATING_HIGH].sortBy,
       sortConfig[sortOption || SortOption.RATING_HIGH].sortOrder,
     )
-  const displayRestaurants = sortedRestaurants || restaurants
+
+  const displayRestaurants: Restaurant[] | SavedRestaurant[] =
+    restaurants || sortedRestaurants
 
   useEffect(() => {
-    if (!restaurants) {
+    if (!sortedRestaurants) {
       mutateRestaurants()
     }
-  }, [sortOption, mutateRestaurants, restaurants])
+  }, [sortOption, mutateRestaurants, sortedRestaurants])
 
   if (!displayRestaurants) return <RestaurantListSkeleton />
 
@@ -42,13 +45,21 @@ function RestaurantWithMap({
         stadium={stadium || null}
         restaurants={displayRestaurants}
       />
-      {displayRestaurants?.map((restaurant: Restaurant) => (
-        <RestaurantItem
-          isRow
-          key={restaurant.id}
-          restaurant={restaurant}
-        />
-      ))}
+      {displayRestaurants?.map(
+        (restaurant: Restaurant | SavedRestaurant) => {
+          const restaurantData =
+            'restaurant' in restaurant
+              ? restaurant.restaurant
+              : restaurant
+          return (
+            <RestaurantItem
+              isRow
+              key={restaurant.id}
+              restaurant={restaurantData}
+            />
+          )
+        },
+      )}
     </div>
   )
 }
