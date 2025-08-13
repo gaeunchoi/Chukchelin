@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import NotAllowAuth from './_components/NotAllowAuth'
 import MypageHeader from './_components/MypageHeader'
 import UserProfile from './_components/UserProfile'
-import TabContent from './_components/mypageDetail/TabContent'
+import TabContent from './_components/detail/TabContent'
 
 function MyPage() {
   const { error: notLoggedIn } = useUser()

@@ -68,9 +68,7 @@ function TabForRestaurant() {
       {savedRestaurants && savedRestaurants.length > 0 ? (
         <RestaurantWithMap
           stadiumId={mainStadiumId}
-          restaurants={savedRestaurants.map(
-            (data: SavedRestaurant) => data.restaurant,
-          )}
+          restaurants={savedRestaurants}
         />
       ) : (
         <EmptyRestaurantsMessage
