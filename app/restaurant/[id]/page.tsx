@@ -6,12 +6,13 @@ import { Button } from '@/components/ui/button'
 import RestaurantHeader from '../_components/detail/RestaurantHeader'
 import RestaurantItem from '@/components/restaurant/RestaurantItem'
 import RestaurantReviewList from '../_components/detail/RestaurantReviewList'
+import RestaurantPageSkeleton from '../_components/skeleton/RestaurantPageSkeleton'
 
 function RestaurantPage() {
   const router = useRouter()
   const params = useParams()
   const restaurantId = parseInt(params.id as string)
-  const { data: restaurant } = useRestaurant(restaurantId)
+  const { data: restaurant, isLoading } = useRestaurant(restaurantId)
 
   const handleReviewWriteButtonClick = () => {
     router.push(`/restaurant/write?restaurantId=${restaurantId}`)
@@ -28,14 +29,20 @@ function RestaurantPage() {
   return (
     <div className={page()}>
       <RestaurantHeader restaurantId={restaurantId} />
-      <RestaurantItem restaurant={restaurant} />
-      <RestaurantReviewList restaurantId={restaurantId} />
-      <Button
-        className={stickyButton()}
-        onClick={handleReviewWriteButtonClick}
-      >
-        리뷰 작성하기
-      </Button>
+      {isLoading ? (
+        <RestaurantPageSkeleton />
+      ) : (
+        <>
+          <RestaurantItem restaurant={restaurant} />
+          <RestaurantReviewList restaurantId={restaurantId} />
+          <Button
+            className={stickyButton()}
+            onClick={handleReviewWriteButtonClick}
+          >
+            리뷰 작성하기
+          </Button>
+        </>
+      )}
     </div>
   )
 }
