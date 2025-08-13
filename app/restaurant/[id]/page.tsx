@@ -2,10 +2,10 @@
 import { useRestaurant } from '@/hooks/useRestaurant'
 import { flexColICenter, page, stickyButton } from '@/style/custom'
 import { useParams, useRouter } from 'next/navigation'
-import RestaurantHeader from '../_components/restaurant_detail/RestaurantHeader'
-import RestaurantItem from '@/components/restaurant/RestaurantItem'
-import RestaurantReviewList from '../_components/restaurant_detail/RestaurantReviewList'
 import { Button } from '@/components/ui/button'
+import RestaurantHeader from '../_components/detail/RestaurantHeader'
+import RestaurantItem from '@/components/restaurant/RestaurantItem'
+import RestaurantReviewList from '../_components/detail/RestaurantReviewList'
 
 function RestaurantPage() {
   const router = useRouter()

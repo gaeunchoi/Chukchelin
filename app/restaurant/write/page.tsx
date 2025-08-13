@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import { page } from '@/style/custom'
-import ReviewHeader from '../_components/restaurant_review/ReviewHeader'
-import ReviewForm from '../_components/restaurant_review/ReviewForm'
+import ReviewForm from '../_components/review/ReviewForm'
+import ReviewHeader from '../_components/review/ReviewHeader'
 import RestaurantReviewFormSkeleton from '../_components/skeleton/RestaurantReviewFormSkeleton'
 
 function RestaurantReviewWritePage() {
