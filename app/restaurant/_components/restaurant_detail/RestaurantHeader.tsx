@@ -1,11 +1,15 @@
 'use client'
+import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
 import { useRestaurant } from '@/hooks/useRestaurant'
+import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
+import { useEffect, useState } from 'react'
 import { favoriteRestaurant } from '@/services/restaurant'
 import { flexRowICenter, header } from '@/style/custom'
-import { Bookmark, ChevronLeft, Share2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { ChevronLeft, Share2 } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
-import { Restaurant } from '@/types/restaurant'
+import { Restaurant, SavedRestaurant } from '@/types/restaurant'
+import BookMark from '@/components/common/BookMark'
 
 type RestaurantHeaderProps = {
   restaurantId: number
@@ -13,8 +17,24 @@ type RestaurantHeaderProps = {
 
 function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   const router = useRouter()
+  const { data: loggedInUser } = useUser()
   const { data: restaurant, mutate: mutateRestaurant } =
     useRestaurant(restaurantId)
+  const { data: savedRestaurant } = useSavedRestaurants(
+    restaurant?.stadium_id,
+  )
+
+  const [isMarked, setIsMarked] = useState<boolean>(false)
+  useEffect(() => {
+    if (savedRestaurant && restaurant?.stadium_id) {
+      setIsMarked(
+        savedRestaurant?.some(
+          (saved: SavedRestaurant) =>
+            saved.restaurant_id === restaurantId,
+        ),
+      )
+    }
+  }, [savedRestaurant, restaurant?.stadium_id, restaurantId])
 
   const handleBack = () => {
     router.back()
@@ -40,7 +60,13 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   }
 
   const handleFavorite = useDebouncedCallback(async () => {
+    if (!loggedInUser) {
+      router.push('/login')
+      return
+    }
+
     try {
+      setIsMarked((prev) => !prev)
       await favoriteRestaurant(restaurantId)
       mutateRestaurant()
     } catch (error) {
@@ -69,19 +95,11 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
             strokeWidth={3}
           />
         </div>
-        <div
-          className={flexRowICenter('gap-1')}
+        <BookMark
+          isMarked={isMarked}
+          count={restaurant?.user_favorite_count || 0}
           onClick={handleFavorite}
-        >
-          <Bookmark
-            size={18}
-            color="black"
-            strokeWidth={3}
-          />
-          <div className="text-[16px] font-semibold text-black">
-            {restaurant?.user_favorite_count || '0'}
-          </div>
-        </div>
+        />
       </div>
     </div>
   )

@@ -3,33 +3,22 @@ import {
   flexRowIJCenter,
   flexRowICenter,
 } from '@/style/custom'
-import { Restaurant } from '@/types/restaurant'
-import { Bookmark } from 'lucide-react'
-import CategoryImage from '../image/CategoryImage'
 import { useRouter } from 'next/navigation'
+import { useUser } from '@/hooks/useUser'
+import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
+import { Restaurant, SavedRestaurant } from '@/types/restaurant'
+import CategoryImage from '../image/CategoryImage'
 import formatDistance from '@/utils/formatDistance'
 import ScoreRating from '../common/ScoreRating'
 import RestaurantBadge from './RestaurantBadge'
 import { cn } from '@/lib/utils'
 import RestaurantItemSkeleton from '../skeleton/RestaurantItemSkeleton'
+import BookMark from '../common/BookMark'
 
 type RestaurantItemProps = {
   restaurant: Restaurant
   isRow?: boolean
 }
-
-const FavoriteCountContent = ({ count }: { count: number }) => (
-  <div className={flexRowICenter('gap-0.5')}>
-    <Bookmark
-      size={15}
-      color="black"
-      strokeWidth={3}
-    />
-    <div className="text-[13px] font-semibold text-black">
-      {count}
-    </div>
-  </div>
-)
 
 const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
   <div className={flexRowICenter('gap-1', 'flex-wrap')}>
@@ -48,6 +37,14 @@ const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
 
 function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   const router = useRouter()
+  const { data: loggedInUser } = useUser()
+  const { data: savedRestaurant } = useSavedRestaurants(
+    restaurant?.stadium_id,
+  )
+
+  const isMarked = savedRestaurant?.some(
+    (saved: SavedRestaurant) => saved.restaurant_id === restaurant.id,
+  )
 
   const handleRestaurantClick = () => {
     router.push(`/restaurant/${restaurant.id}`)
@@ -90,7 +87,8 @@ function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
               {restaurant.name}
             </div>
             {isRow && (
-              <FavoriteCountContent
+              <BookMark
+                isMarked={isMarked}
                 count={restaurant.user_favorite_count}
               />
             )}
