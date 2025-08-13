@@ -7,6 +7,7 @@ import Script from 'next/script'
 import { Toaster } from 'sonner'
 import KakaoScript from './_components/KakaoScript'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { initializeAmplitude } from '@/utils/analytics'
 
 export const metadata: Metadata = {
   title: '축슐랭',
@@ -29,9 +30,14 @@ declare global {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
+  // Amplitude 초기화 (클라이언트 사이드에서만)
+  if (typeof window !== 'undefined') {
+    initializeAmplitude()
+  }
+
   return (
     <html lang="ko">
       <head>
@@ -41,6 +47,7 @@ export default function RootLayout({
           crossOrigin=""
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
+        <Script src="https://cdn.amplitude.com/script/df960bf97518a03cf2930a317683c073.js" />
       </head>
       <Script
         type="text/javascript"

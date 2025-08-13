@@ -4,7 +4,6 @@ import {
   flexRowICenter,
 } from '@/style/custom'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@/hooks/useUser'
 import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
 import { Restaurant, SavedRestaurant } from '@/types/restaurant'
 import CategoryImage from '../image/CategoryImage'
@@ -14,6 +13,7 @@ import RestaurantBadge from './RestaurantBadge'
 import { cn } from '@/lib/utils'
 import RestaurantItemSkeleton from '../skeleton/RestaurantItemSkeleton'
 import BookMark from '../common/BookMark'
+import { trackRestaurantViewed } from '@/utils/analytics'
 
 type RestaurantItemProps = {
   restaurant: Restaurant
@@ -37,7 +37,6 @@ const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
 
 function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   const router = useRouter()
-  const { data: loggedInUser } = useUser()
   const { data: savedRestaurant } = useSavedRestaurants(
     restaurant?.stadium_id,
   )
@@ -47,6 +46,14 @@ function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   )
 
   const handleRestaurantClick = () => {
+    // 맛집 조회 이벤트 추적
+    trackRestaurantViewed(
+      restaurant.id.toString(),
+      restaurant.name,
+      restaurant.restaurant_category.name,
+      restaurant.stadium?.name || 'Unknown',
+    )
+
     router.push(`/restaurant/${restaurant.id}`)
   }
 

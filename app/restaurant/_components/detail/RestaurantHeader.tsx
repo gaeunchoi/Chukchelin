@@ -10,6 +10,7 @@ import { ChevronLeft, Share2 } from 'lucide-react'
 import { useDebouncedCallback } from 'use-debounce'
 import { Restaurant, SavedRestaurant } from '@/types/restaurant'
 import BookMark from '@/components/common/BookMark'
+import { useModalContext } from '@/contexts/ModalContext'
 
 type RestaurantHeaderProps = {
   restaurantId: number
@@ -18,6 +19,7 @@ type RestaurantHeaderProps = {
 function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   const router = useRouter()
   const { data: loggedInUser } = useUser()
+  const { openModal } = useModalContext()
   const { data: restaurant, mutate: mutateRestaurant } =
     useRestaurant(restaurantId)
   const { data: savedRestaurant } = useSavedRestaurants(
@@ -25,6 +27,7 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   )
 
   const [isMarked, setIsMarked] = useState<boolean>(false)
+
   useEffect(() => {
     if (savedRestaurant && restaurant?.stadium_id) {
       setIsMarked(
@@ -43,20 +46,24 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   const handleShare = async (restaurant: Restaurant) => {
     if (!restaurant) return
 
-    window.Kakao.Share.sendDefault({
-      objectType: 'feed',
-      content: {
-        title: `[${restaurant.restaurant_category.name}] ${restaurant.name}`,
-        description: restaurant.address,
-        link: {
-          webUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
-          mobileWebUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
+    try {
+      window.Kakao.Share.sendDefault({
+        objectType: 'feed',
+        content: {
+          title: `[${restaurant.restaurant_category.name}] ${restaurant.name}`,
+          description: restaurant.address,
+          link: {
+            webUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
+            mobileWebUrl: `${process.env.NEXT_PUBLIC_APP_URL}/restaurant/${restaurant.id}`,
+          },
         },
-      },
-      social: {
-        likeCount: restaurant.user_favorite_count || 0,
-      },
-    })
+        social: {
+          likeCount: restaurant.user_favorite_count || 0,
+        },
+      })
+    } catch (error) {
+      console.error('공유 처리 중 오류가 발생했습니다:', error)
+    }
   }
 
   const handleFavorite = useDebouncedCallback(async () => {
@@ -70,7 +77,14 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
       await favoriteRestaurant(restaurantId)
       mutateRestaurant()
     } catch (error) {
-      console.error('좋아요 처리 중 오류가 발생했습니다:', error)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : '즐겨찾기 도중 오류가 발생했습니다.'
+      openModal({
+        title: '즐겨찾기 실패',
+        description: errorMessage,
+      })
     }
   }, 1000)
 
@@ -84,9 +98,7 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
       />
       <div className={flexRowICenter('gap-4')}>
         <div
-          onClick={() => {
-            handleShare(restaurant)
-          }}
+          onClick={restaurant && (() => handleShare(restaurant))}
           className="cursor-pointer"
         >
           <Share2

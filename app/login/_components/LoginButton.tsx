@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { termLabel, TermOption } from '@/constants/termLabel'
+import { trackSignUpStarted } from '@/utils/analytics'
 
 interface TermsState {
   allChecked: boolean
@@ -186,6 +187,9 @@ function LoginButton() {
   }, [])
 
   const handleLoginClick = useCallback(() => {
+    // 회원가입 시작 이벤트 추적
+    trackSignUpStarted('kakao')
+
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code`,
     )
