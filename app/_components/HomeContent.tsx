@@ -1,4 +1,5 @@
 'use client'
+import { useUser } from '@/hooks/useUser'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import EmptyMainStadium from './EmptyMainStadium'
@@ -6,19 +7,23 @@ import ScheduleList from './ScheduleList'
 import RestaurantList from './RestaurantList'
 
 function HomeContent() {
+  const { data: loggedInUser } = useUser()
   const searchParams = useSearchParams()
   const mainStadiumId = searchParams.get('mainStadiumId')
 
   useEffect(() => {
-    if (mainStadiumId) {
-      const currentParams = new URLSearchParams(
-        searchParams.toString(),
-      )
-      currentParams.set('mainStadiumId', mainStadiumId.toString())
-      const newUrl = `/?${currentParams.toString()}`
+    if (loggedInUser && !mainStadiumId) {
+      const newUrl = `/?mainStadiumId=${loggedInUser.favorite_team.id}`
       window.history.pushState(null, '', newUrl)
     }
-  }, [mainStadiumId, searchParams])
+  }, [loggedInUser, mainStadiumId])
+
+  useEffect(() => {
+    if (mainStadiumId) {
+      const newUrl = `/?mainStadiumId=${mainStadiumId.toString()}`
+      window.history.pushState(null, '', newUrl)
+    }
+  }, [mainStadiumId])
 
   if (!mainStadiumId) {
     return <EmptyMainStadium />
