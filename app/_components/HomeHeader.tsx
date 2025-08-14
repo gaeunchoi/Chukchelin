@@ -5,6 +5,7 @@ import { Search, Bookmark, UserCog } from 'lucide-react'
 import { header, flexRowICenter } from '@/style/custom'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
+import { trackEvent } from '@/utils/analytics'
 
 function HomeHeader() {
   const router = useRouter()
@@ -37,7 +38,10 @@ function HomeHeader() {
           size={18}
           color="black"
           strokeWidth={3}
-          onClick={() => router.push('/search')}
+          onClick={() => {
+            trackEvent('search_button_clicked')
+            router.push('/search')
+          }}
         />
         <Bookmark
           size={18}

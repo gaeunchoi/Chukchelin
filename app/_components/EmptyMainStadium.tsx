@@ -11,10 +11,11 @@ function EmptyMainStadium() {
       className={flexColIJCenter(
         'w-full',
         'h-full',
-        '-mt-12',
         'text-sm',
         'text-gray-500',
         'gap-6',
+        'my-auto',
+        '-translate-y-10',
       )}
     >
       <div className={flexColIJCenter('gap-2', 'text-center')}>

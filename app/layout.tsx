@@ -6,8 +6,8 @@ import Modal from '@/components/common/Modal'
 import Script from 'next/script'
 import { Toaster } from 'sonner'
 import KakaoScript from './_components/KakaoScript'
+import AmplitudeInitializer from './_components/AmplitudeInitializer'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { initializeAmplitude } from '@/utils/analytics'
 
 export const metadata: Metadata = {
   title: '축슐랭',
@@ -33,11 +33,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Amplitude 초기화 (클라이언트 사이드에서만)
-  if (typeof window !== 'undefined') {
-    initializeAmplitude()
-  }
-
   return (
     <html lang="ko">
       <head>
@@ -60,6 +55,7 @@ export default function RootLayout({
         </ModalProvider>
         <Toaster />
         <KakaoScript />
+        <AmplitudeInitializer />
       </body>
     </html>
   )
