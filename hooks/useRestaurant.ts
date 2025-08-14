@@ -1,4 +1,6 @@
 import useSWR from 'swr'
 
 export const useRestaurant = (restaurantId: number | null) =>
-  useSWR(`/restaurant/${restaurantId}`)
+  useSWR(`/restaurant/${restaurantId}`, {
+    keepPreviousData: true,
+  })

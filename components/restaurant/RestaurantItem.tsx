@@ -4,8 +4,7 @@ import {
   flexRowICenter,
 } from '@/style/custom'
 import { useRouter } from 'next/navigation'
-import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
-import { Restaurant, SavedRestaurant } from '@/types/restaurant'
+import { Restaurant } from '@/types/restaurant'
 import CategoryImage from '../image/CategoryImage'
 import formatDistance from '@/utils/formatDistance'
 import ScoreRating from '../common/ScoreRating'
@@ -37,13 +36,6 @@ const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
 
 function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   const router = useRouter()
-  const { data: savedRestaurant } = useSavedRestaurants(
-    restaurant?.stadium_id,
-  )
-
-  const isMarked = savedRestaurant?.some(
-    (saved: SavedRestaurant) => saved.restaurant_id === restaurant.id,
-  )
 
   const handleRestaurantClick = () => {
     // 맛집 조회 이벤트 추적
@@ -93,12 +85,7 @@ function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
             <div className="text-[15px] font-bold text-black">
               {restaurant.name}
             </div>
-            {isRow && (
-              <BookMark
-                isMarked={isMarked}
-                count={restaurant.user_favorite_count}
-              />
-            )}
+            {isRow && <BookMark restaurantId={restaurant.id} />}
           </div>
           <ScoreRating
             isShort

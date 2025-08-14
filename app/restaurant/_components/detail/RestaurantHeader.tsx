@@ -1,16 +1,10 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@/hooks/useUser'
-import { useRestaurant } from '@/hooks/useRestaurant'
-import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
-import { useEffect, useState } from 'react'
-import { favoriteRestaurant } from '@/services/restaurant'
 import { flexRowICenter, header } from '@/style/custom'
 import { ChevronLeft, Share2 } from 'lucide-react'
-import { useDebouncedCallback } from 'use-debounce'
-import { Restaurant, SavedRestaurant } from '@/types/restaurant'
+import { Restaurant } from '@/types/restaurant'
 import BookMark from '@/components/common/BookMark'
-import { useModalContext } from '@/contexts/ModalContext'
+import { useBookmark } from '@/hooks/useBookmark'
 
 type RestaurantHeaderProps = {
   restaurantId: number
@@ -18,26 +12,7 @@ type RestaurantHeaderProps = {
 
 function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
   const router = useRouter()
-  const { data: loggedInUser } = useUser()
-  const { openModal } = useModalContext()
-  const { data: restaurant, mutate: mutateRestaurant } =
-    useRestaurant(restaurantId)
-  const { data: savedRestaurant } = useSavedRestaurants(
-    restaurant?.stadium_id,
-  )
-
-  const [isMarked, setIsMarked] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (savedRestaurant && restaurant?.stadium_id) {
-      setIsMarked(
-        savedRestaurant?.some(
-          (saved: SavedRestaurant) =>
-            saved.restaurant_id === restaurantId,
-        ),
-      )
-    }
-  }, [savedRestaurant, restaurant?.stadium_id, restaurantId])
+  const { restaurant } = useBookmark(restaurantId)
 
   const handleBack = () => {
     router.back()
@@ -66,28 +41,6 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
     }
   }
 
-  const handleFavorite = useDebouncedCallback(async () => {
-    if (!loggedInUser) {
-      router.push('/login')
-      return
-    }
-
-    try {
-      setIsMarked((prev) => !prev)
-      await favoriteRestaurant(restaurantId)
-      mutateRestaurant()
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : '즐겨찾기 도중 오류가 발생했습니다.'
-      openModal({
-        title: '즐겨찾기 실패',
-        description: errorMessage,
-      })
-    }
-  }, 1000)
-
   return (
     <div className={header('justify-between')}>
       <ChevronLeft
@@ -107,11 +60,7 @@ function RestaurantHeader({ restaurantId }: RestaurantHeaderProps) {
             strokeWidth={3}
           />
         </div>
-        <BookMark
-          isMarked={isMarked}
-          count={restaurant?.user_favorite_count || 0}
-          onClick={handleFavorite}
-        />
+        <BookMark restaurantId={restaurantId} />
       </div>
     </div>
   )
