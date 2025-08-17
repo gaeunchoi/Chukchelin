@@ -32,6 +32,7 @@ function RestaurantReviewList({
       restaurantId,
       reviewSortConfig[sortOption].sortBy,
       reviewSortConfig[sortOption].sortOrder,
+      isOnlyHomeFan,
     )
   const { openModal } = useModalContext()
 
@@ -54,7 +55,7 @@ function RestaurantReviewList({
 
   useEffect(() => {
     mutateReviews()
-  }, [sortOption, mutateReviews])
+  }, [sortOption, isOnlyHomeFan, mutateReviews])
 
   const sortOptions = Object.values(ReviewSortOption).map(
     (option) => ({
