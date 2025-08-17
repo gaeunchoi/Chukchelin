@@ -18,7 +18,10 @@ import { Stadium } from '@/types/stadium'
 import { useEffect, useState } from 'react'
 import StadiumItem from './StadiumItem'
 import LogoImage from '../image/LogoImage'
-import { trackTeamSelected } from '@/utils/analytics'
+import {
+  trackTeamSelected,
+  trackStadiumPageViewed,
+} from '@/utils/analytics'
 
 type StadiumSelectorProps = {
   onSelect: (stadiumId: number) => void
@@ -81,6 +84,12 @@ function StadiumSelector({
     if (selectedStadiumId && selectedStadium) {
       // 팀 선택 이벤트 추적
       trackTeamSelected(selectedStadium.team[0].name)
+
+      // 구장 페이지 조회 이벤트 추적
+      trackStadiumPageViewed(
+        selectedStadium.name,
+        selectedStadium.team[0].name,
+      )
 
       onSelect(selectedStadiumId)
       setIsOpen(false)

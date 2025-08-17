@@ -8,6 +8,7 @@ import { login } from '@/services/auth'
 import { useUser } from '@/hooks/useUser'
 import { User } from '@/types/user'
 import { flexColICenter, flexColIJCenter } from '@/style/custom'
+import { trackSignUpCompleted } from '@/utils/analytics'
 
 function ProviderPage() {
   const router = useRouter()
@@ -62,7 +63,7 @@ function ProviderPage() {
       })
       setAccessToken(accessToken)
       const loggedInUser = await mutateUser()
-
+      trackSignUpCompleted('kakao')
       if (loggedInUser) {
         showSuccessModal(loggedInUser)
       }

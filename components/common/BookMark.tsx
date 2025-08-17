@@ -5,6 +5,7 @@ import { useBookmark } from '@/hooks/useBookmark'
 import { useEffect, useState } from 'react'
 import { flexRowICenter } from '@/style/custom'
 import { Bookmark } from 'lucide-react'
+import { trackRestaurantFavorited } from '@/utils/analytics'
 
 type BookMarkProps = {
   restaurantId: number
@@ -43,6 +44,14 @@ function BookMark({ restaurantId }: BookMarkProps) {
 
     setIsMarked(!isMarked)
     setBookmarkCount(bookmarkCount + (!isMarked ? 1 : -1))
+
+    // 즐겨찾기 이벤트 추적
+    if (restaurant) {
+      trackRestaurantFavorited(
+        restaurant.id.toString(),
+        restaurant.name,
+      )
+    }
 
     handleBookmark()
   }

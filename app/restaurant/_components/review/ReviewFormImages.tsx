@@ -1,18 +1,65 @@
 'use client'
 import { Camera, X } from 'lucide-react'
 import { flexColIJCenter, flexRowICenter } from '@/style/custom'
+import { trackImageUploadFailed } from '@/utils/analytics'
 
 type ReviewFormImagesProps = {
   images: File[]
   onAddImage: (image: File[]) => void
   onRemoveImage: (index: number) => void
+  restaurantId?: string
 }
 
 function ReviewFormImages({
   images,
   onAddImage,
   onRemoveImage,
+  restaurantId,
 }: ReviewFormImagesProps) {
+  const handleImageAdd = (files: File[]) => {
+    try {
+      // 파일 크기 및 타입 검증
+      const validFiles = files.filter((file) => {
+        if (file.size > 10 * 1024 * 1024) {
+          // 10MB 제한
+          if (restaurantId) {
+            trackImageUploadFailed(
+              restaurantId,
+              'file_size_exceeded',
+              '파일 크기가 10MB를 초과합니다.',
+            )
+          }
+          return false
+        }
+
+        if (!file.type.startsWith('image/')) {
+          if (restaurantId) {
+            trackImageUploadFailed(
+              restaurantId,
+              'invalid_file_type',
+              '이미지 파일만 업로드 가능합니다.',
+            )
+          }
+          return false
+        }
+
+        return true
+      })
+
+      if (validFiles.length > 0) {
+        onAddImage(validFiles)
+      }
+    } catch (error) {
+      if (restaurantId) {
+        trackImageUploadFailed(
+          restaurantId,
+          'file_processing_error',
+          '파일 처리 중 오류가 발생했습니다.',
+        )
+      }
+    }
+  }
+
   return (
     <div className={flexRowICenter('justify-start', 'gap-3')}>
       <div
@@ -47,7 +94,7 @@ function ReviewFormImages({
           accept="image/*"
           onChange={(e) => {
             if (e.target.files) {
-              onAddImage(Array.from(e.target.files))
+              handleImageAdd(Array.from(e.target.files))
             }
           }}
         />
