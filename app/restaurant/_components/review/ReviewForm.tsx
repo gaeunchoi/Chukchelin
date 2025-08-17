@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { useModalContext } from '@/contexts/ModalContext'
 import { useRestaurant } from '@/hooks/useRestaurant'
@@ -16,6 +16,7 @@ import {
   trackImageUploaded,
   trackImageUploadFailed,
   trackReviewSubmitted,
+  trackReviewStarted,
 } from '@/utils/analytics'
 
 function ReviewFormWithSearchParams() {
@@ -34,6 +35,13 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
   const [score, setScore] = useState<number>(0)
   const [images, setImages] = useState<File[]>([])
   const [content, setContent] = useState<string>('')
+
+  useEffect(() => {
+    if (restaurant) {
+      // 리뷰 작성 시작 이벤트 추적
+      trackReviewStarted(restaurant.id.toString(), restaurant.name)
+    }
+  }, [restaurant])
 
   const handleDeleteImage = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx))
