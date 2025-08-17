@@ -1,7 +1,6 @@
 'use client'
 import { Camera, X } from 'lucide-react'
 import { flexColIJCenter, flexRowICenter } from '@/style/custom'
-import { trackImageUploadFailed } from '@/utils/analytics'
 
 type ReviewFormImagesProps = {
   images: File[]
@@ -22,24 +21,10 @@ function ReviewFormImages({
       const validFiles = files.filter((file) => {
         if (file.size > 10 * 1024 * 1024) {
           // 10MB 제한
-          if (restaurantId) {
-            trackImageUploadFailed(
-              restaurantId,
-              'file_size_exceeded',
-              '파일 크기가 10MB를 초과합니다.',
-            )
-          }
           return false
         }
 
         if (!file.type.startsWith('image/')) {
-          if (restaurantId) {
-            trackImageUploadFailed(
-              restaurantId,
-              'invalid_file_type',
-              '이미지 파일만 업로드 가능합니다.',
-            )
-          }
           return false
         }
 
@@ -50,13 +35,8 @@ function ReviewFormImages({
         onAddImage(validFiles)
       }
     } catch (error) {
-      if (restaurantId) {
-        trackImageUploadFailed(
-          restaurantId,
-          'file_processing_error',
-          '파일 처리 중 오류가 발생했습니다.',
-        )
-      }
+      // 에러 처리
+      console.error('Image processing error:', error)
     }
   }
 

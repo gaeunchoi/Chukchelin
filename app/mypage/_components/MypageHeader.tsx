@@ -2,6 +2,7 @@
 import { flexRowIJCenter, header } from '@/style/custom'
 import { ChevronLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { track } from '@amplitude/analytics-browser'
 
 type MypageHeaderProps = {
   isEditPage?: boolean
@@ -9,10 +10,26 @@ type MypageHeaderProps = {
 function MypageHeader({ isEditPage }: MypageHeaderProps) {
   const router = useRouter()
 
+  const handleBackClick = () => {
+    if (isEditPage) {
+      track('MyPage | MyPage Edit Canceled', {
+        page_name: 'MyPage Edit',
+        page_path: '/mypage/edit',
+      })
+    } else {
+      track('MyPage | MyPage Back Clicked', {
+        page_name: 'MyPage',
+        page_path: '/mypage',
+      })
+    }
+
+    router.push(isEditPage ? '/mypage' : '/')
+  }
+
   return (
     <div className={header()}>
       <button
-        onClick={() => router.push(isEditPage ? '/mypage' : '/')}
+        onClick={handleBackClick}
         className="cursor-pointer p-1 z-1"
       >
         <ChevronLeft

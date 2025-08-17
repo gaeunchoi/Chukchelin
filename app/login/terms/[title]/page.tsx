@@ -4,8 +4,17 @@ import { flexCol, header, page, stickyButton } from '@/style/custom'
 import { Button } from '@/components/ui/button'
 import { useParams, useRouter } from 'next/navigation'
 import LoginTerm from '../../_components/LoginTerm'
+import { track } from '@amplitude/analytics-browser'
+import { useEffect } from 'react'
 
 function TermsPage() {
+  useEffect(() => {
+    track('Auth | Terms Viewed', {
+      page_name: 'Terms',
+      page_path: '/login/terms',
+    })
+  }, [])
+
   const router = useRouter()
   const { title } = useParams()
 

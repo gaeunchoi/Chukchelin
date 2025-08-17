@@ -6,6 +6,7 @@ import { flexCol } from '@/style/custom'
 import { Schedule } from '@/types/schedule'
 import { Team } from '@/types/stadium'
 import { formatDate } from '@/utils/formatDate'
+import { track } from '@amplitude/analytics-browser'
 
 type ScheduleCardProps = {
   isCurrent: boolean
@@ -66,6 +67,7 @@ const ScheduleCard = forwardRef<HTMLDivElement, ScheduleCardProps>(
         )}
         onClick={() => {
           if (!opposingTeam) return
+          track('Home | Schedule Card Clicked')
           onClick(schedule)
         }}
       >

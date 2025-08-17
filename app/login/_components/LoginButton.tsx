@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { termLabel, TermOption } from '@/constants/termLabel'
-import { trackSignUpStarted } from '@/utils/analytics'
+import { track } from '@amplitude/analytics-browser'
 
 interface TermsState {
   allChecked: boolean
@@ -46,6 +46,7 @@ const TermsContent = ({
     (e: React.MouseEvent) => {
       e.preventDefault()
       e.stopPropagation()
+      track('Auth | Terms Viewed')
       router.push(`/login/terms/${termContent}`)
     },
     [termContent],
@@ -187,9 +188,6 @@ function LoginButton() {
   }, [])
 
   const handleLoginClick = useCallback(() => {
-    // 회원가입 시작 이벤트 추적
-    trackSignUpStarted('kakao')
-
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code`,
     )
@@ -222,6 +220,7 @@ function LoginButton() {
               'hover:bg-[#E6CC00]',
               'transition-opacity',
             )}
+            onClick={() => track('Auth | Login Button Clicked')}
           >
             <img
               src="/kakao.png"

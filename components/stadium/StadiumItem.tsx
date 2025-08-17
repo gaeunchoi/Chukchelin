@@ -3,6 +3,9 @@ import { flexCol, flexRowICenter } from '@/style/custom'
 import { Stadium } from '@/types/stadium'
 import LogoImage from '@/components/image/LogoImage'
 import CheckSelected from '../common/CheckSelected'
+import { usePathname } from 'next/navigation'
+import { PATH_NAME } from '@/constants/path'
+import { track } from '@amplitude/analytics-browser'
 
 type StadiumItemProps = {
   stadium: Stadium
@@ -17,6 +20,7 @@ function StadiumItem({
   onSelect,
   onClick,
 }: StadiumItemProps) {
+  const pathname = usePathname()
   const stadiumItemRightContents = isSelected ? (
     <CheckSelected />
   ) : (
@@ -36,6 +40,15 @@ function StadiumItem({
         'transition-colors',
       )}
       onClick={() => {
+        track(
+          `${
+            PATH_NAME[pathname as keyof typeof PATH_NAME]
+          } | Stadium Item Clicked`,
+          {
+            stadium_id: stadium.id,
+            stadium_name: stadium.name,
+          },
+        )
         onSelect?.(stadium.id)
         onClick?.(stadium.id)
       }}

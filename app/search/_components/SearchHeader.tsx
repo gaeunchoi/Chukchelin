@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { header } from '@/style/custom'
 import { flexRowICenter } from '@/style/custom'
 import { ChevronLeft, Search } from 'lucide-react'
+import { track } from '@amplitude/analytics-browser'
 
 function SearchHeader() {
   const router = useRouter()
@@ -14,6 +15,13 @@ function SearchHeader() {
 
   const debouncedSetSearchKeyword = useDebouncedCallback(
     (value: string) => {
+      if (value.trim()) {
+        track('Search | Query Submitted', {
+          keyword: value.trim(),
+          queryLength: value.trim().length,
+          timestamp: Date.now(),
+        })
+      }
       setSearchKeyword(value)
     },
     500,

@@ -3,7 +3,7 @@ import {
   flexRowIJCenter,
   flexRowICenter,
 } from '@/style/custom'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { Restaurant } from '@/types/restaurant'
 import CategoryImage from '../image/CategoryImage'
 import formatDistance from '@/utils/formatDistance'
@@ -12,7 +12,8 @@ import RestaurantBadge from './RestaurantBadge'
 import { cn } from '@/lib/utils'
 import RestaurantItemSkeleton from '../skeleton/RestaurantItemSkeleton'
 import BookMark from '../common/BookMark'
-import { trackRestaurantViewed } from '@/utils/analytics'
+import { track } from '@amplitude/analytics-browser'
+import { PATH_NAME } from '@/constants/path'
 
 type RestaurantItemProps = {
   restaurant: Restaurant
@@ -36,16 +37,19 @@ const TagsList = ({ restaurant }: { restaurant: Restaurant }) => (
 
 function RestaurantItem({ restaurant, isRow }: RestaurantItemProps) {
   const router = useRouter()
+  const pathname = usePathname()
 
   const handleRestaurantClick = () => {
-    // 맛집 조회 이벤트 추적
-    trackRestaurantViewed(
-      restaurant.id.toString(),
-      restaurant.name,
-      restaurant.restaurant_category.name,
-      restaurant.stadium?.name || 'Unknown',
+    track(
+      `${
+        PATH_NAME[pathname as keyof typeof PATH_NAME]
+      } | Restaurant Item Clicked`,
+      {
+        path_name: pathname,
+        restaurant_id: restaurant.id,
+        restaurant_name: restaurant.name,
+      },
     )
-
     router.push(`/restaurant/${restaurant.id}`)
   }
 

@@ -8,7 +8,7 @@ import { login } from '@/services/auth'
 import { useUser } from '@/hooks/useUser'
 import { User } from '@/types/user'
 import { flexColICenter, flexColIJCenter } from '@/style/custom'
-import { trackSignUpCompleted } from '@/utils/analytics'
+import { track } from '@amplitude/analytics-browser'
 
 function ProviderPage() {
   const router = useRouter()
@@ -54,7 +54,13 @@ function ProviderPage() {
   )
 
   const handleLogin = useCallback(async () => {
-    if (!code) return
+    track('Auth | Login Started')
+    if (!code) {
+      track('Auth | Login Failed', {
+        error: 'No code provided',
+      })
+      return
+    }
 
     try {
       const { accessToken } = await login({
@@ -63,7 +69,8 @@ function ProviderPage() {
       })
       setAccessToken(accessToken)
       const loggedInUser = await mutateUser()
-      trackSignUpCompleted('kakao')
+
+      track('Auth | Login Completed')
       if (loggedInUser) {
         showSuccessModal(loggedInUser)
       }

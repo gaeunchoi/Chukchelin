@@ -5,8 +5,17 @@ import NotAllowAuth from '../_components/NotAllowAuth'
 import MypageHeader from '../_components/MypageHeader'
 import UserProfile from '../_components/UserProfile'
 import UserProfileForm from '../_components/edit/UserProfileForm'
+import { track } from '@amplitude/analytics-browser'
+import { useEffect } from 'react'
 
 function ProfileEditPage() {
+  useEffect(() => {
+    track('MyPage | MyPage Edit Viewed', {
+      page_name: 'MyPage Edit',
+      page_path: '/mypage/edit',
+    })
+  }, [])
+
   const { error: notLoggedIn } = useUser()
   if (notLoggedIn) return <NotAllowAuth />
 

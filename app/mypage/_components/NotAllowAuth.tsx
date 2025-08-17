@@ -3,10 +3,18 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { page, flexColICenter } from '@/style/custom'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
+import { track } from '@amplitude/analytics-browser'
 
 function NotAllowAuth() {
   const router = useRouter()
   const [countdown, setCountdown] = useState(3)
+
+  useEffect(() => {
+    track('MyPage | Not Allow Auth', {
+      page_name: 'MyPage',
+      page_path: '/mypage',
+    })
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {

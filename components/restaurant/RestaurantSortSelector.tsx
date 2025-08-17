@@ -10,6 +10,7 @@ import { flexCol, flexRowICenter } from '@/style/custom'
 import { ChevronDown } from 'lucide-react'
 import { useState } from 'react'
 import CheckSelected from '../common/CheckSelected'
+import { track } from '@amplitude/analytics-browser'
 
 type RestaurantSortSelectorProps = {
   selectedOption: string
@@ -25,6 +26,9 @@ function RestaurantSortSelector({
   const [open, setOpen] = useState<boolean>(false)
 
   const handleSortOptionSelect = (option: string) => {
+    track('Home | Restaurant Sort Option Selected', {
+      option,
+    })
     onSelect(option)
     setOpen(false)
   }

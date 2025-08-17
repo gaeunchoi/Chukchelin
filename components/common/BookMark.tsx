@@ -5,7 +5,7 @@ import { useBookmark } from '@/hooks/useBookmark'
 import { useEffect, useState } from 'react'
 import { flexRowICenter } from '@/style/custom'
 import { Bookmark } from 'lucide-react'
-import { trackRestaurantFavorited } from '@/utils/analytics'
+import { track } from '@amplitude/analytics-browser'
 
 type BookMarkProps = {
   restaurantId: number
@@ -32,6 +32,10 @@ function BookMark({ restaurantId }: BookMarkProps) {
     e.preventDefault()
 
     if (!loggedInUser) {
+      track('Home | Bookmark - Login Required', {
+        restaurantId: restaurantId,
+        restaurantName: restaurant?.name,
+      })
       return openModal({
         title: '로그인 필요',
         description: '맛집 저장은 로그인 후 이용해주세요.',
@@ -42,16 +46,16 @@ function BookMark({ restaurantId }: BookMarkProps) {
       })
     }
 
-    setIsMarked(!isMarked)
-    setBookmarkCount(bookmarkCount + (!isMarked ? 1 : -1))
+    const newBookmarkState = !isMarked
+    track('Home | RestaurantItem Bookmark Toggled', {
+      restaurantId: restaurantId,
+      restaurantName: restaurant?.name,
+      action: newBookmarkState ? 'added' : 'removed',
+      previousState: isMarked,
+    })
 
-    // 즐겨찾기 이벤트 추적
-    if (restaurant) {
-      trackRestaurantFavorited(
-        restaurant.id.toString(),
-        restaurant.name,
-      )
-    }
+    setIsMarked(newBookmarkState)
+    setBookmarkCount(bookmarkCount + (newBookmarkState ? 1 : -1))
 
     handleBookmark()
   }

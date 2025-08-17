@@ -5,7 +5,7 @@ import { Search, Bookmark, UserCog } from 'lucide-react'
 import { header, flexRowICenter } from '@/style/custom'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
-import { trackEvent } from '@/utils/analytics'
+import { track } from '@amplitude/analytics-browser'
 
 function HomeHeader() {
   const router = useRouter()
@@ -19,6 +19,21 @@ function HomeHeader() {
 
     const newUrl = `/?mainStadiumId=${stadiumId}`
     window.history.pushState(null, '', newUrl)
+  }
+
+  const handleSearchClick = () => {
+    track('Home | Search Button Clicked')
+    router.push('/search')
+  }
+
+  const handleBookmarkClick = () => {
+    track('Home | Bookmark Button Clicked')
+    router.push('/mypage')
+  }
+
+  const handleUserClick = () => {
+    track('Home | User Button Clicked')
+    router.push('/mypage/edit')
   }
 
   useEffect(() => {
@@ -38,23 +53,20 @@ function HomeHeader() {
           size={18}
           color="black"
           strokeWidth={3}
-          onClick={() => {
-            trackEvent('search_button_clicked')
-            router.push('/search')
-          }}
+          onClick={handleSearchClick}
         />
         <Bookmark
           size={18}
           strokeWidth={3}
           color="black"
-          onClick={() => router.push('/mypage')}
+          onClick={handleBookmarkClick}
         />
         {loggedInUser && (
           <UserCog
             size={18}
             strokeWidth={3}
             color="black"
-            onClick={() => router.push('/mypage/edit')}
+            onClick={handleUserClick}
           />
         )}
       </div>

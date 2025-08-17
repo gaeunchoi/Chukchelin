@@ -7,12 +7,28 @@ import RestaurantHeader from '../_components/detail/RestaurantHeader'
 import RestaurantItem from '@/components/restaurant/RestaurantItem'
 import RestaurantReviewList from '../_components/detail/RestaurantReviewList'
 import RestaurantPageSkeleton from '../_components/skeleton/RestaurantPageSkeleton'
+import { track } from '@amplitude/analytics-browser'
+import { useEffect } from 'react'
 
 function RestaurantPage() {
   const router = useRouter()
   const params = useParams()
   const restaurantId = parseInt(params.id as string)
   const { data: restaurant, isLoading } = useRestaurant(restaurantId)
+
+  useEffect(() => {
+    if (restaurant) {
+      track('Restaurant | Restaurant Detail Viewed', {
+        pageName: 'Restaurant Detail',
+        pagePath: `/restaurant/${restaurantId}`,
+        restaurantId: restaurant.id,
+        restaurantName: restaurant.name,
+        category: restaurant.restaurant_category.name,
+        stadium: restaurant.stadium?.name,
+        timestamp: Date.now(),
+      })
+    }
+  }, [restaurant, restaurantId])
 
   const handleReviewWriteButtonClick = () => {
     router.push(`/restaurant/write?restaurantId=${restaurantId}`)

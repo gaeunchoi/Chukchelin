@@ -7,7 +7,7 @@ export const page = (...args: ClassValue[]) =>
     'flex-col',
     'items-center',
     'justify-start',
-    'min-h-screen-safe',
+    'h-[100dvh]',
     'box-border',
     'p-6',
     'pt-0',

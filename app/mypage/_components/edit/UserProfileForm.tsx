@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 import Nickname from './Nickname'
 import HomeStadium from './HomeStadium'
 import { useUser } from '@/hooks/useUser'
+import { track } from '@amplitude/analytics-browser'
 
 function UserProfileForm() {
   const router = useRouter()
@@ -59,6 +60,11 @@ function UserProfileForm() {
       })
 
       mutateUser(updatedUser)
+
+      track('MyPage | MyPage Edit Completed', {
+        page_name: 'MyPage Edit',
+        page_path: '/mypage/edit',
+      })
 
       showSuccessModal()
     } catch (error) {
