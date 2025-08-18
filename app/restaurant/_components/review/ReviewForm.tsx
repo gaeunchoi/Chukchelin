@@ -64,7 +64,8 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
       openModal({
         title: '리뷰 작성 실패',
         description: errorMessage,
-        actionBtnText: '확인',
+        actionBtnText: '돌아가기',
+        onAction: () => router.back(),
       })
     }
   }
