@@ -19,7 +19,7 @@ function Modal() {
       open={isOpen}
       onOpenChange={closeModal}
     >
-      <AlertDialogContent>
+      <AlertDialogContent className="z-1000">
         <AlertDialogHeader>
           <AlertDialogTitle>{contents.title}</AlertDialogTitle>
           <AlertDialogDescription className="whitespace-pre-line">
@@ -27,7 +27,9 @@ function Modal() {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>닫기</AlertDialogCancel>
+          {!contents.onAction && (
+            <AlertDialogCancel>닫기</AlertDialogCancel>
+          )}
           {contents.onAction && (
             <AlertDialogAction onClick={contents.onAction}>
               {contents.actionBtnText || '확인'}
