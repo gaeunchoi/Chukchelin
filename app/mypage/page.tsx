@@ -2,7 +2,7 @@
 import { useUser } from '@/hooks/useUser'
 import { page } from '@/style/custom'
 import { Suspense, useEffect } from 'react'
-import NotAllowAuth from './_components/NotAllowAuth'
+import NotAllowAuth from '../../components/common/NotAllowAuth'
 import MypageHeader from './_components/MypageHeader'
 import UserProfile from './_components/UserProfile'
 import TabContent from './_components/detail/TabContent'

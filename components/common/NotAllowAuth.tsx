@@ -33,7 +33,11 @@ function NotAllowAuth() {
   useEffect(() => {
     if (countdown === 0) {
       const redirectTimer = setTimeout(() => {
-        router.push('/login')
+        // 현재 페이지 URL을 state 파라미터로 전달
+        const currentPath =
+          window.location.pathname + window.location.search
+        const redirectUrl = encodeURIComponent(currentPath)
+        router.push(`/login?redirect=${redirectUrl}`)
       }, 100)
 
       return () => clearTimeout(redirectTimer)

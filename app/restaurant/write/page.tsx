@@ -5,6 +5,8 @@ import ReviewForm from '../_components/review/ReviewForm'
 import ReviewHeader from '../_components/review/ReviewHeader'
 import RestaurantReviewFormSkeleton from '../_components/skeleton/RestaurantReviewFormSkeleton'
 import { track } from '@amplitude/analytics-browser'
+import { useUser } from '@/hooks/useUser'
+import NotAllowAuth from '@/components/common/NotAllowAuth'
 
 function RestaurantReviewWritePage() {
   useEffect(() => {
@@ -14,6 +16,16 @@ function RestaurantReviewWritePage() {
       timestamp: Date.now(),
     })
   }, [])
+
+  const { error: notLoggedIn } = useUser()
+  if (notLoggedIn) {
+    track('Restaurant | Review Write Not Logged In', {
+      pageName: 'Review Write',
+      pagePath: '/restaurant/write',
+      timestamp: Date.now(),
+    })
+    return <NotAllowAuth />
+  }
 
   return (
     <div className={page()}>
