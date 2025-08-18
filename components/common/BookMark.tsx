@@ -36,6 +36,7 @@ function BookMark({ restaurantId }: BookMarkProps) {
         restaurantId: restaurantId,
         restaurantName: restaurant?.name,
       })
+
       return openModal({
         title: '로그인 필요',
         description: '맛집 저장은 로그인 후 이용해주세요.',

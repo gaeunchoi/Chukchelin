@@ -7,8 +7,7 @@ import { SavedRestaurant } from '@/types/restaurant'
 import { useRestaurant } from './useRestaurant'
 
 export const useBookmark = (restaurantId: number) => {
-  const { data: restaurant, mutate: mutateRestaurant } =
-    useRestaurant(restaurantId)
+  const { data: restaurant } = useRestaurant(restaurantId)
   const { data: savedRestaurant } = useSavedRestaurants(
     restaurant?.stadium_id,
   )
@@ -29,8 +28,6 @@ export const useBookmark = (restaurantId: number) => {
   const handleBookmark = useDebouncedCallback(async () => {
     try {
       await favoriteRestaurant(restaurant.id)
-
-      mutateRestaurant()
     } catch (error) {
       const errorMessage =
         error instanceof Error
