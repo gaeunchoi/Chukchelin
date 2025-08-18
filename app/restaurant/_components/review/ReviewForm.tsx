@@ -12,6 +12,7 @@ import ReviewFormContent from './ReviewFormContent'
 import ReviewFormImages from './ReviewFormImages'
 import ReviewFormScore from './ReviewFormScore'
 import ReviewFormTitle from './ReviewFormTitle'
+import { track } from '@amplitude/analytics-browser'
 
 function ReviewFormWithSearchParams() {
   const searchParams = useSearchParams()
@@ -48,6 +49,14 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
         },
         images,
       )
+
+      track('Restaurant | Review Created', {
+        restaurant_id: restaurantId,
+        restaurant_name: restaurant.name,
+        score: score,
+        content: content,
+        image_count: images.length,
+      })
 
       openModal({
         title: '리뷰 작성 완료',
