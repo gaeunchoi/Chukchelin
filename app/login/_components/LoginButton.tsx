@@ -101,6 +101,7 @@ const TermsContent = ({
 function LoginButton() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const redirect = searchParams.get('redirect')
   const [state, setState] = useState<TermsState>({
     allChecked: false,
     agreedTerms: [false, false],
@@ -153,7 +154,6 @@ function LoginButton() {
     [searchParams],
   )
 
-  // 전체 약관 동의 상태 업데이트
   const updateAllChecked = useCallback((agreedTerms: boolean[]) => {
     const allChecked = agreedTerms.every((term) => term)
     setState((prev) => ({ ...prev, allChecked }))
@@ -188,10 +188,14 @@ function LoginButton() {
   }, [])
 
   const handleLoginClick = useCallback(() => {
+    const targetUrl =
+      redirect || window.location.pathname + window.location.search
+    const encodedUrl = encodeURIComponent(targetUrl)
+
     router.push(
-      `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code`,
+      `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code&state=${encodedUrl}`,
     )
-  }, [router])
+  }, [router, redirect])
 
   useEffect(() => {
     restoreStateFromURL()

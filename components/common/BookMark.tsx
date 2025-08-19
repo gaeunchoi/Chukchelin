@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { flexRowICenter } from '@/style/custom'
 import { Bookmark } from 'lucide-react'
 import { track } from '@amplitude/analytics-browser'
+import { useRedirectUrl } from '@/hooks/useRedirectUrl'
 
 type BookMarkProps = {
   restaurantId: number
@@ -15,12 +16,12 @@ function BookMark({ restaurantId }: BookMarkProps) {
   const router = useRouter()
   const { data: loggedInUser } = useUser()
   const { openModal } = useModalContext()
-
   const {
     isMarked: isMarkedFromHook,
     handleBookmark,
     restaurant,
   } = useBookmark(restaurantId)
+  const redirectUrl = useRedirectUrl()
 
   const [bookmarkCount, setBookmarkCount] = useState<number>(
     restaurant?.user_favorite_count || 0,
@@ -42,7 +43,7 @@ function BookMark({ restaurantId }: BookMarkProps) {
         description: '맛집 저장은 로그인 후 이용해주세요.',
         actionBtnText: '로그인',
         onAction: () => {
-          router.push('/login')
+          router.push(`/login?redirect=${redirectUrl}`)
         },
       })
     }

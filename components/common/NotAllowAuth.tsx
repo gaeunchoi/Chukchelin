@@ -4,15 +4,17 @@ import { useRouter } from 'next/navigation'
 import { page, flexColICenter } from '@/style/custom'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { track } from '@amplitude/analytics-browser'
+import { useRedirectUrl } from '@/hooks/useRedirectUrl'
 
 function NotAllowAuth() {
   const router = useRouter()
   const [countdown, setCountdown] = useState(3)
+  const redirectUrl = useRedirectUrl()
 
   useEffect(() => {
-    track('MyPage | Not Allow Auth', {
-      page_name: 'MyPage',
-      page_path: '/mypage',
+    track('Mypage | Not Allow Auth', {
+      page_name: 'Protected Page',
+      page_path: window.location.pathname,
     })
   }, [])
 
@@ -33,16 +35,17 @@ function NotAllowAuth() {
   useEffect(() => {
     if (countdown === 0) {
       const redirectTimer = setTimeout(() => {
-        // 현재 페이지 URL을 state 파라미터로 전달
-        const currentPath =
-          window.location.pathname + window.location.search
-        const redirectUrl = encodeURIComponent(currentPath)
+        track('Auth | Redirecting to Login', {
+          from: window.location.pathname + window.location.search,
+          redirectUrl: redirectUrl,
+        })
+
         router.push(`/login?redirect=${redirectUrl}`)
       }, 100)
 
       return () => clearTimeout(redirectTimer)
     }
-  }, [countdown, router])
+  }, [countdown, router, redirectUrl])
 
   return (
     <div className={page('text-gray-500', 'justify-center')}>

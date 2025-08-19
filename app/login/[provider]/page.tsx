@@ -6,35 +6,17 @@ import LoadingSpinner from '@/components/common/LoadingSpinner'
 import { useModalContext } from '@/contexts/ModalContext'
 import { login } from '@/services/auth'
 import { useUser } from '@/hooks/useUser'
-import { User } from '@/types/user'
 import { flexColICenter, flexColIJCenter } from '@/style/custom'
 import { track } from '@amplitude/analytics-browser'
 
 function ProviderPage() {
   const router = useRouter()
-  const code = useSearchParams().get('code')
+  const searchParams = useSearchParams()
+  const code = searchParams.get('code')
+  const state = searchParams.get('state') // 원래 페이지 URL
   const setAccessToken = useAuthStore((state) => state.setAccessToken)
   const { openModal } = useModalContext()
   const { mutate: mutateUser } = useUser()
-
-  const showSuccessModal = useCallback(
-    (loggedInUser: User) => {
-      const hasFavoriteTeam = !!loggedInUser.favorite_team_id
-      const description = hasFavoriteTeam
-        ? '축슐랭에 오신 것을 환영합니다!\n홈페이지로 이동합니다.'
-        : '축슐랭에 오신 것을 환영합니다!\n마이페이지에서 좋아하는 팀을 설정해주세요.'
-
-      openModal({
-        title: '로그인 성공',
-        description,
-        actionBtnText: '확인',
-        onAction: () => {
-          router.push(hasFavoriteTeam ? '/' : '/mypage/edit')
-        },
-      })
-    },
-    [openModal, router],
-  )
 
   const showErrorModal = useCallback(
     (error: unknown) => {
@@ -55,6 +37,7 @@ function ProviderPage() {
 
   const handleLogin = useCallback(async () => {
     track('Auth | Login Started')
+
     if (!code) {
       track('Auth | Login Failed', {
         error: 'No code provided',
@@ -71,13 +54,21 @@ function ProviderPage() {
       const loggedInUser = await mutateUser()
 
       track('Auth | Login Completed')
+
       if (loggedInUser) {
-        showSuccessModal(loggedInUser)
+        if (state) {
+          const originalUrl = decodeURIComponent(state)
+          router.push(originalUrl)
+        } else {
+          router.push(
+            loggedInUser.favorite_team ? '/' : '/mypage/edit',
+          )
+        }
       }
     } catch (error) {
       showErrorModal(error)
     }
-  }, [code, setAccessToken, mutateUser])
+  }, [router, code, state, setAccessToken, mutateUser])
 
   useEffect(() => {
     if (code) {
