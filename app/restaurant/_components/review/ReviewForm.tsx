@@ -31,6 +31,14 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
   const [images, setImages] = useState<File[]>([])
   const [content, setContent] = useState<string>('')
 
+  const submitButtonDisabled = score === 0 || content.length < 10
+  const submitButtonLabel = () => {
+    if (score === 0) return '별점을 선택해주세요'
+    else if (content.length < 10)
+      return '리뷰 내용을 10자 이상 작성해주세요'
+    else return '리뷰 작성하기'
+  }
+
   const handleDeleteImage = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx))
   }
@@ -105,9 +113,9 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
       <Button
         className={stickyButton()}
         onClick={handleReviewSubmit}
-        disabled={score === 0 || content.length < 10}
+        disabled={submitButtonDisabled}
       >
-        리뷰 작성하기
+        {submitButtonLabel()}
       </Button>
     </div>
   )
