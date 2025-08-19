@@ -13,7 +13,7 @@ function ProviderPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const code = searchParams.get('code')
-  const state = searchParams.get('state') // 원래 페이지 URL
+  const state = searchParams.get('state')
   const setAccessToken = useAuthStore((state) => state.setAccessToken)
   const { openModal } = useModalContext()
   const { mutate: mutateUser } = useUser()
@@ -60,9 +60,10 @@ function ProviderPage() {
           const originalUrl = decodeURIComponent(state)
           router.push(originalUrl)
         } else {
-          router.push(
-            loggedInUser.favorite_team ? '/' : '/mypage/edit',
-          )
+          const hasFavoriteTeam =
+            loggedInUser.favorite_team &&
+            loggedInUser.favorite_team.id
+          router.push(hasFavoriteTeam ? '/' : '/mypage/edit')
         }
       }
     } catch (error) {

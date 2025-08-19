@@ -37,7 +37,11 @@ function HomeHeader() {
   }
 
   useEffect(() => {
-    if (loggedInUser && !mainStadiumId) {
+    if (
+      loggedInUser &&
+      !mainStadiumId &&
+      loggedInUser.favorite_team
+    ) {
       handleStadiumSelect(loggedInUser.favorite_team.id)
     }
   }, [loggedInUser, mainStadiumId])

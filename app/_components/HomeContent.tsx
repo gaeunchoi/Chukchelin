@@ -12,7 +12,11 @@ function HomeContent() {
   const mainStadiumId = searchParams.get('mainStadiumId')
 
   useEffect(() => {
-    if (loggedInUser && !mainStadiumId) {
+    if (
+      loggedInUser &&
+      !mainStadiumId &&
+      loggedInUser.favorite_team
+    ) {
       const newUrl = `/?mainStadiumId=${loggedInUser.favorite_team.id}`
       window.history.pushState(null, '', newUrl)
     }
