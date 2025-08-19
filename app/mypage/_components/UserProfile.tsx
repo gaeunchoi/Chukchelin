@@ -68,10 +68,12 @@ function UserProfile({ editMode }: UserProfileProps) {
             <div className="font-bold text-[18px]">
               {loggedInUser.nickname}
             </div>
-            <LogoImage
-              url={loggedInUser.favorite_team?.logo_image_url}
-              size={19}
-            />
+            {loggedInUser.favorite_team && (
+              <LogoImage
+                url={loggedInUser.favorite_team?.logo_image_url}
+                size={19}
+              />
+            )}
           </div>
           <div className="text-gray-400 text-[14px] font-medium">
             <span className="font-bold">{loggedInUser.id}</span>번째
