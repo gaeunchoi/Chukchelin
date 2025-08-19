@@ -70,7 +70,7 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
         title: '리뷰 작성 완료',
         description: '리뷰가 성공적으로 작성되었습니다.',
         actionBtnText: '확인',
-        onAction: () => router.replace(`/restaurant/${restaurantId}`),
+        onAction: () => router.back(),
       })
     } catch (error: unknown) {
       const errorMessage =
