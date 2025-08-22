@@ -2,9 +2,15 @@
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { flexColIJCenter } from '@/style/custom'
+import { track } from '@amplitude/analytics-browser'
 
 function EmptyMainStadium() {
   const router = useRouter()
+
+  const handleSettingFavoriteTeam = () => {
+    track('Home | Setting Favorite Team Button Clicked')
+    router.push('/mypage/edit')
+  }
 
   return (
     <div
@@ -29,7 +35,7 @@ function EmptyMainStadium() {
       </div>
 
       <Button
-        onClick={() => router.push('/mypage/edit')}
+        onClick={handleSettingFavoriteTeam}
         className="text-[16px] font-semibold p-7"
       >
         좋아하는 팀 설정하기
