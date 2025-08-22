@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { flexColIJCenter } from '@/style/custom'
 import { track } from '@amplitude/analytics-browser'
+import { useEffect } from 'react'
 
 function EmptyMainStadium() {
   const router = useRouter()
@@ -11,6 +12,10 @@ function EmptyMainStadium() {
     track('Home | Setting Favorite Team Button Clicked')
     router.push('/mypage/edit')
   }
+
+  useEffect(() => {
+    track('Home | Empty Main Stadium Viewed')
+  }, [])
 
   return (
     <div
