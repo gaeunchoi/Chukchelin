@@ -40,7 +40,7 @@ function NotAllowAuth() {
           redirectUrl: redirectUrl,
         })
 
-        router.push(`/login?redirect=${redirectUrl}`)
+        router.replace(`/login?redirect=${redirectUrl}`)
       }, 100)
 
       return () => clearTimeout(redirectTimer)

@@ -29,7 +29,7 @@ function ProviderPage() {
         title: '로그인 실패',
         description: errorMessage,
         actionBtnText: '다시 시도',
-        onAction: () => router.push('/login'),
+        onAction: () => router.replace('/login'),
       })
     },
     [openModal, router],
@@ -42,13 +42,14 @@ function ProviderPage() {
       track('Auth | Login Failed', {
         error: 'No code provided',
       })
+      showErrorModal(new Error('No code provided'))
       return
     }
 
     try {
       const { accessToken } = await login({
         code,
-        redirectUrl: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI!,
+        redirectUrl: process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI ?? '',
       })
       setAccessToken(accessToken)
       const loggedInUser = await mutateUser()
@@ -56,17 +57,24 @@ function ProviderPage() {
       track('Auth | Login Completed')
 
       if (loggedInUser) {
-        if (state) {
-          const originalUrl = decodeURIComponent(state)
-          router.push(originalUrl)
-        } else {
-          const hasFavoriteTeam =
-            loggedInUser.favorite_team &&
-            loggedInUser.favorite_team.id
-          router.push(hasFavoriteTeam ? '/' : '/mypage/edit')
+        const hasFavoriteTeam =
+          loggedInUser.favorite_team && loggedInUser.favorite_team.id
+
+        let redirectUrl = '/'
+
+        if (!hasFavoriteTeam) {
+          redirectUrl = '/mypage/edit'
+        } else if (state) {
+          redirectUrl = decodeURIComponent(state)
         }
+
+        router.replace(redirectUrl)
       }
     } catch (error) {
+      track('Auth | Login Failed', {
+        error:
+          error instanceof Error ? error.message : 'Unknown error',
+      })
       showErrorModal(error)
     }
   }, [router, code, state, setAccessToken, mutateUser])

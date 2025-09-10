@@ -47,9 +47,9 @@ const TermsContent = ({
       e.preventDefault()
       e.stopPropagation()
       track('Auth | Terms Viewed')
-      router.push(`/login/terms/${termContent}`)
+      router.replace(`/login/terms/${termContent}`)
     },
-    [termContent],
+    [termContent, router],
   )
 
   const handleCheckboxClick = useCallback(
@@ -151,7 +151,7 @@ function LoginButton() {
         })
       }
     },
-    [searchParams],
+    [searchParams, router],
   )
 
   const updateAllChecked = useCallback((agreedTerms: boolean[]) => {
@@ -163,6 +163,19 @@ function LoginButton() {
     (open: boolean) => {
       setState((prev) => ({ ...prev, isDrawerOpen: open }))
       updateURL({ isDrawerOpen: open })
+
+      // 드로어가 닫힐 때 포커스를 적절히 관리
+      if (!open) {
+        // 드로어가 닫힌 후 트리거 버튼으로 포커스 이동
+        setTimeout(() => {
+          const trigger = document.querySelector(
+            '[data-slot="drawer-trigger"] button',
+          )
+          if (trigger instanceof HTMLElement) {
+            trigger.focus()
+          }
+        }, 100)
+      }
     },
     [updateURL],
   )
@@ -192,6 +205,7 @@ function LoginButton() {
       redirect || window.location.pathname + window.location.search
     const encodedUrl = encodeURIComponent(targetUrl)
 
+    track('Auth | Login Button Clicked')
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code&state=${encodedUrl}`,
     )

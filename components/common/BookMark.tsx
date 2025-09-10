@@ -43,7 +43,7 @@ function BookMark({ restaurantId }: BookMarkProps) {
         description: '맛집 저장은 로그인 후 이용해주세요.',
         actionBtnText: '로그인',
         onAction: () => {
-          router.push(`/login?redirect=${redirectUrl}`)
+          router.replace(`/login?redirect=${redirectUrl}`)
         },
       })
     }
