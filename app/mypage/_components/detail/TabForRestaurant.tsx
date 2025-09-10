@@ -3,24 +3,28 @@ import { useUser } from '@/hooks/useUser'
 import { useSavedRestaurants } from '@/hooks/useSavedRestaurants'
 import { useStadium } from '@/hooks/useStadium'
 import { useEffect } from 'react'
-import { SavedRestaurant } from '@/types/restaurant'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 import RestaurantWithMap from '@/components/map/RestaurantWithMap'
 
-import { flexCol } from '@/style/custom'
+import { flexCol, flexColIJCenter } from '@/style/custom'
 
 const EmptyRestaurantsMessage = ({
   stadiumName,
 }: {
   stadiumName: string
 }) => (
-  <div className={flexCol('w-full', 'py-8', 'text-gray-500')}>
+  <div
+    className={flexColIJCenter(
+      'w-full',
+      'h-full',
+      '-mt-10',
+      'text-gray-500',
+    )}
+  >
     <div className="text-center">
-      <p className="text-lg font-semibold mb-2">
-        저장된 맛집이 없습니다
-      </p>
       <p className="text-sm">
-        {stadiumName} 인근에 저장한 맛집이 없어요.
+        <span className="font-semibold">{stadiumName}</span> 인근에
+        저장한 맛집이 없어요.
       </p>
       <p className="text-sm mt-1">
         다른 구장을 선택하거나 새로운 맛집을 저장해보세요!
@@ -48,8 +52,10 @@ function TabForRestaurant() {
   }, [loggedInUser, mainStadiumId])
 
   useEffect(() => {
-    mutateSavedRestaurants()
-  }, [mainStadiumId, mutateSavedRestaurants])
+    if (mainStadiumId) {
+      mutateSavedRestaurants()
+    }
+  }, [mainStadiumId])
 
   const handleStadiumSelect = (stadiumId: number) => {
     const currentParams = new URLSearchParams(searchParams.toString())
@@ -60,7 +66,15 @@ function TabForRestaurant() {
   }
 
   return (
-    <div className={flexCol('w-full', 'items-start', 'gap-4')}>
+    <div
+      className={flexCol(
+        'w-full',
+        'h-full',
+        'items-start',
+        'gap-4',
+        'pb-2',
+      )}
+    >
       <StadiumSelector
         onSelect={handleStadiumSelect}
         selectedStadiumId={mainStadiumId}

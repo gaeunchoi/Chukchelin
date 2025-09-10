@@ -43,6 +43,7 @@ function EmptyMainStadium() {
         onClick={handleSettingFavoriteTeam}
         className="text-[16px] font-semibold p-7"
       >
+        로그인 후 <br />
         좋아하는 팀 설정하기
       </Button>
     </div>

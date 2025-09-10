@@ -63,7 +63,10 @@ function StadiumSelector({
   const [isOpen, setIsOpen] = useState(false)
 
   useEffect(() => {
-    if (propSelectedStadiumId !== undefined) {
+    if (
+      propSelectedStadiumId !== undefined &&
+      propSelectedStadiumId !== selectedStadiumId
+    ) {
       setSelectedStadiumId(propSelectedStadiumId)
     }
   }, [propSelectedStadiumId])
@@ -73,6 +76,7 @@ function StadiumSelector({
   }
 
   const handleCancel = () => {
+    setSelectedStadiumId(propSelectedStadiumId || null)
     setIsOpen(false)
   }
 
@@ -91,10 +95,9 @@ function StadiumSelector({
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <DrawerTrigger>
+      <DrawerTrigger className="z-10">
         <TriggerContent selectedStadium={selectedStadium} />
       </DrawerTrigger>
-
       <DrawerContent className={flexCol('z-1000', 'pb-8')}>
         <DrawerHeader className={flexCol('gap-8', 'flex-shrink-0')}>
           <DrawerTitle>
@@ -116,7 +119,6 @@ function StadiumSelector({
             </div>
           </DrawerDescription>
         </DrawerHeader>
-
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           <div className={flexCol('w-full', 'gap-6')}>
             {stadiums?.map((stadium: Stadium) => (
@@ -129,7 +131,6 @@ function StadiumSelector({
             ))}
           </div>
         </div>
-
         <DrawerFooter className="flex-shrink-0 w-full grid grid-cols-2 gap-3">
           <Button
             variant="secondary"

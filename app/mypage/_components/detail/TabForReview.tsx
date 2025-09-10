@@ -2,7 +2,7 @@ import { useUser } from '@/hooks/useUser'
 import { useMyReviews } from '@/hooks/useMyReviews'
 import { deleteReview } from '@/services/review'
 import { useModalContext } from '@/contexts/ModalContext'
-import { flexColIJCenter } from '@/style/custom'
+import { flexCol, flexColIJCenter } from '@/style/custom'
 import { Review } from '@/types/review'
 import ReviewItem from '@/components/review/ReviewItem'
 import LoadingSpinner from '@/components/common/LoadingSpinner'
@@ -39,8 +39,18 @@ function TabForReview() {
     )
   }
 
+  if (myReviews?.length === 0) {
+    return (
+      <div className={flexColIJCenter('w-full', 'h-full', '-mt-10')}>
+        <p className="text-gray-500">작성한 리뷰가 없습니다.</p>
+      </div>
+    )
+  }
+
   return (
-    <div className="w-full flex flex-col items-start gap-4">
+    <div
+      className={flexCol('w-full', 'gap-4', 'items-start', 'pb-2')}
+    >
       {myReviews?.map((review: Review) => (
         <ReviewItem
           key={review.id}

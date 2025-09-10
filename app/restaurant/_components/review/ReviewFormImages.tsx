@@ -6,21 +6,17 @@ type ReviewFormImagesProps = {
   images: File[]
   onAddImage: (image: File[]) => void
   onRemoveImage: (index: number) => void
-  restaurantId?: string
 }
 
 function ReviewFormImages({
   images,
   onAddImage,
   onRemoveImage,
-  restaurantId,
 }: ReviewFormImagesProps) {
   const handleImageAdd = (files: File[]) => {
     try {
-      // 파일 크기 및 타입 검증
       const validFiles = files.filter((file) => {
         if (file.size > 10 * 1024 * 1024) {
-          // 10MB 제한
           return false
         }
 
@@ -35,28 +31,27 @@ function ReviewFormImages({
         onAddImage(validFiles)
       }
     } catch (error) {
-      // 에러 처리
       console.error('Image processing error:', error)
     }
   }
 
   return (
     <div className={flexRowICenter('justify-start', 'gap-3')}>
-      <div
+      <label
+        htmlFor="image-input"
         className={flexColIJCenter(
           'min-w-20',
           'min-h-20',
           'rounded-md',
           'border-2',
           'border-[#18181E]',
+          'cursor-pointer',
         )}
       >
-        <label
-          htmlFor="image-input"
+        <div
           className={flexColIJCenter(
             'min-w-6',
             'min-h-6',
-            'cursor-pointer',
             'bg-gray-300',
             'rounded-full',
           )}
@@ -65,7 +60,7 @@ function ReviewFormImages({
             size={16}
             color="black"
           />
-        </label>
+        </div>
         <input
           type="file"
           id="image-input"
@@ -84,7 +79,7 @@ function ReviewFormImages({
           </span>
           /10
         </div>
-      </div>
+      </label>
       <div className={flexRowICenter('gap-3', 'overflow-x-scroll')}>
         {images.map((image, index) => (
           <div

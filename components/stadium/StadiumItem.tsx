@@ -21,13 +21,6 @@ function StadiumItem({
   onClick,
 }: StadiumItemProps) {
   const pathname = usePathname()
-  const stadiumItemRightContents = isSelected ? (
-    <CheckSelected />
-  ) : (
-    <div className="text-[14px] font-semibold text-[#838383]">
-      주변 맛집 {stadium.restaurant_count}개
-    </div>
-  )
 
   return (
     <div
@@ -49,6 +42,7 @@ function StadiumItem({
             stadium_name: stadium.name,
           },
         )
+
         onSelect?.(stadium.id)
         onClick?.(stadium.id)
       }}
@@ -69,7 +63,7 @@ function StadiumItem({
           </div>
         </div>
       </div>
-      {isSelected !== undefined && stadiumItemRightContents}
+      {isSelected && <CheckSelected />}
     </div>
   )
 }

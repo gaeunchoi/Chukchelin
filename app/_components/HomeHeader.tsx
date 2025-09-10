@@ -58,12 +58,14 @@ function HomeHeader() {
           color="black"
           strokeWidth={3}
           onClick={handleSearchClick}
+          className="cursor-pointer"
         />
         <Bookmark
           size={18}
           strokeWidth={3}
           color="black"
           onClick={handleBookmarkClick}
+          className="cursor-pointer"
         />
         {loggedInUser && (
           <UserCog
@@ -71,6 +73,7 @@ function HomeHeader() {
             strokeWidth={3}
             color="black"
             onClick={handleUserClick}
+            className="cursor-pointer"
           />
         )}
       </div>
