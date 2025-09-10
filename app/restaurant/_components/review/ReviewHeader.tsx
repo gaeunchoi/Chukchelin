@@ -2,11 +2,13 @@
 import { useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 import { header } from '@/style/custom'
+import { track } from '@amplitude/analytics-browser'
 
 function ReviewHeader() {
   const router = useRouter()
 
   const handleCloseButtonClick = () => {
+    track('Restaurant | Review Write Back Button Clicked')
     router.back()
   }
 

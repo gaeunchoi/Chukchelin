@@ -1,8 +1,10 @@
 'use client'
-import { Settings } from 'lucide-react'
+import { LogOut, Settings } from 'lucide-react'
 import UserProfileSkeleton from './skeletons/UserProfileSkeleton'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
+import { useAuthStore } from '@/store/useAuthStore'
+import { useModalContext } from '@/contexts/ModalContext'
 import LogoImage from '@/components/image/LogoImage'
 import {
   flexCol,
@@ -11,6 +13,7 @@ import {
 } from '@/style/custom'
 import ProfileImage from '@/components/image/ProfileImage'
 import ProfileImageEditButton from './edit/ProfileImageEditButton'
+import { track } from '@amplitude/analytics-browser'
 
 type UserProfileProps = {
   editMode: boolean
@@ -19,6 +22,29 @@ type UserProfileProps = {
 function UserProfile({ editMode }: UserProfileProps) {
   const router = useRouter()
   const { data: loggedInUser } = useUser()
+  const { userLogout } = useAuthStore()
+  const { openModal } = useModalContext()
+
+  const handleEditClick = () => {
+    track('Mypage | Edit Clicked', {
+      page_name: 'MyPage Edit',
+      page_path: '/mypage/edit',
+    })
+    router.replace('/mypage/edit')
+  }
+
+  const handleLogout = () => {
+    track('Mypage | Logout Clicked')
+
+    openModal({
+      title: '로그아웃',
+      description: '로그아웃이 완료되었습니다.',
+      onAction: () => {
+        userLogout()
+        router.push('/')
+      },
+    })
+  }
 
   if (!loggedInUser)
     return <UserProfileSkeleton editMode={editMode} />
@@ -83,12 +109,18 @@ function UserProfile({ editMode }: UserProfileProps) {
             </span>
           </div>
         </div>
-        <div className={flexRowICenter()}>
+        <div className={flexRowICenter('gap-4')}>
           <Settings
             size={24}
             color="black"
             strokeWidth={3}
-            onClick={() => router.push('/mypage/edit')}
+            onClick={handleEditClick}
+          />
+          <LogOut
+            size={20}
+            color="gray"
+            strokeWidth={3}
+            onClick={handleLogout}
           />
         </div>
       </div>

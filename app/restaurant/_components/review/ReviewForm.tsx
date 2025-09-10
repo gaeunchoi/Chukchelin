@@ -41,13 +41,61 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
 
   const handleDeleteImage = (idx: number) => {
     setImages((prev) => prev.filter((_, i) => i !== idx))
+
+    track('Restaurant | Review Image Removed', {
+      restaurant_id: restaurantId,
+      restaurant_name: restaurant?.name,
+      image_index: idx,
+    })
   }
 
   const handleAddImage = (files: File[]) => {
     setImages((prev) => [...prev, ...files])
+
+    track('Restaurant | Review Image Added', {
+      restaurant_id: restaurantId,
+      restaurant_name: restaurant?.name,
+    })
+  }
+
+  const handleScoreChange = (newScore: number) => {
+    const previousScore = score
+    setScore(newScore)
+
+    track('Restaurant | Review Score Changed', {
+      restaurant_id: restaurantId,
+      restaurant_name: restaurant?.name,
+      previous_score: previousScore,
+      new_score: newScore,
+    })
+  }
+
+  const handleContentChange = (newContent: string) => {
+    const previousLength = content.length
+    setContent(newContent)
+
+    const currentLength = newContent.length
+    if (
+      Math.floor(currentLength / 10) !==
+      Math.floor(previousLength / 10)
+    ) {
+      track('Restaurant | Review Content Changed', {
+        restaurant_id: restaurantId,
+        restaurant_name: restaurant?.name,
+        content_length: currentLength,
+      })
+    }
   }
 
   const handleReviewSubmit = async () => {
+    track('Restaurant | Review Submit Started', {
+      restaurant_id: restaurantId,
+      restaurant_name: restaurant?.name,
+      score: score,
+      content_length: content.length,
+      image_count: images.length,
+    })
+
     try {
       await createReview(
         restaurantId,
@@ -58,12 +106,13 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
         images,
       )
 
-      track('Restaurant | Review Created', {
+      track('Restaurant | Review Created Successfully', {
         restaurant_id: restaurantId,
-        restaurant_name: restaurant.name,
+        restaurant_name: restaurant?.name,
         score: score,
-        content: content,
+        content_length: content.length,
         image_count: images.length,
+        review_type: images.length > 0 ? 'with_images' : 'text_only',
       })
 
       openModal({
@@ -77,6 +126,15 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
         error instanceof Error
           ? error.message
           : '리뷰 작성에 실패했습니다. 다시 시도해주세요.'
+
+      track('Restaurant | Review Creation Failed', {
+        restaurant_id: restaurantId,
+        restaurant_name: restaurant?.name,
+        score: score,
+        content_length: content.length,
+        image_count: images.length,
+        error_message: errorMessage,
+      })
 
       openModal({
         title: '리뷰 작성 실패',
@@ -97,18 +155,17 @@ function ReviewForm({ restaurantId }: { restaurantId: number }) {
         <ReviewFormTitle restaurantName={restaurant.name} />
         <ReviewFormScore
           score={score}
-          onChange={setScore}
+          onChange={handleScoreChange}
         />
       </div>
       <ReviewFormImages
         images={images}
         onAddImage={(files) => handleAddImage(files)}
         onRemoveImage={(idx) => handleDeleteImage(idx)}
-        restaurantId={restaurant.id.toString()}
       />
       <ReviewFormContent
         content={content}
-        onChange={setContent}
+        onChange={handleContentChange}
       />
       <Button
         className={stickyButton()}
