@@ -59,7 +59,7 @@ function RestaurantList() {
   if (!mainStadiumId) return null
 
   return (
-    <div className={flexCol('flex-1', 'w-full', 'gap-3')}>
+    <div className={flexCol('flex-1', 'w-full', 'gap-3', 'pb-2')}>
       <div className={flexRowICenter('w-full', 'justify-between')}>
         <div className="text-[14px]">
           {stadium?.name} 주변{' '}
