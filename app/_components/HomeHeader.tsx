@@ -1,11 +1,12 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useUser } from '@/hooks/useUser'
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { Search, Bookmark, UserCog } from 'lucide-react'
 import { header, flexRowICenter } from '@/style/custom'
 import StadiumSelector from '@/components/stadium/StadiumSelector'
 import { useSelectedScheduleContext } from '@/contexts/SelectedScheduleContext'
 import { track } from '@amplitude/analytics-browser'
+import { useAuthStore } from '@/store/useAuthStore'
 
 function HomeHeader() {
   const router = useRouter()
@@ -13,13 +14,17 @@ function HomeHeader() {
   const mainStadiumId = searchParams.get('mainStadiumId')
   const { data: loggedInUser } = useUser()
   const { setSelectedSchedule } = useSelectedScheduleContext()
+  const { AccessToken } = useAuthStore()
 
-  const handleStadiumSelect = (stadiumId: number) => {
-    setSelectedSchedule(null)
+  const handleStadiumSelect = useCallback(
+    (stadiumId: number) => {
+      setSelectedSchedule(null)
 
-    const newUrl = `/?mainStadiumId=${stadiumId}`
-    window.history.pushState(null, '', newUrl)
-  }
+      const newUrl = `/?mainStadiumId=${stadiumId}`
+      window.history.pushState(null, '', newUrl)
+    },
+    [setSelectedSchedule],
+  )
 
   const handleSearchClick = () => {
     track('Home | Search Button Clicked')
@@ -38,13 +43,14 @@ function HomeHeader() {
 
   useEffect(() => {
     if (
+      AccessToken &&
       loggedInUser &&
       !mainStadiumId &&
       loggedInUser.favorite_team
     ) {
       handleStadiumSelect(loggedInUser.favorite_team.id)
     }
-  }, [loggedInUser, mainStadiumId])
+  }, [AccessToken, loggedInUser, mainStadiumId, handleStadiumSelect])
 
   return (
     <div className={header('justify-between')}>
@@ -67,7 +73,7 @@ function HomeHeader() {
           onClick={handleBookmarkClick}
           className="cursor-pointer"
         />
-        {loggedInUser && (
+        {AccessToken && loggedInUser && (
           <UserCog
             size={18}
             strokeWidth={3}
